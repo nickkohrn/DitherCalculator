@@ -62,26 +62,18 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                            }
+                            FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
                             TextField(0.formatted(), value: $imagingFocalLength, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .imagingFocalLength
-                        }
+                        InfoButton { selectedComponent = .imagingFocalLength }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                            }
+                            FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
                             TextField(0.formatted(), value: $imagingPixelSize, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .imagingPixelSize
-                        }
+                        InfoButton { selectedComponent = .imagingPixelSize }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -90,26 +82,18 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                            }
+                            FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
                             TextField(0.formatted(), value: $guidingFocalLength, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .guidingFocalLength
-                        }
+                        InfoButton { selectedComponent = .guidingFocalLength }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                            }
+                            FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
                             TextField(0.formatted(), value: $guidingPixelSize, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .guidingPixelSize
-                        }
+                        InfoButton { selectedComponent = .guidingPixelSize }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -118,26 +102,18 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Scale")
-                            }
+                            FormRowHeader(string: "Scale")
                             TextField(1.formatted(), value: $scale, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .scale
-                        }
+                        InfoButton { selectedComponent = .scale }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader {
-                                Text("Maximum Shift")
-                            }
+                            FormRowHeader(string: "Maximum Shift")
                             TextField(0.formatted(), value: $pixelShift, format: .number)
                         }
-                        InfoButton {
-                            selectedComponent = .pixelShift
-                        }
+                        InfoButton { selectedComponent = .pixelShift }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {

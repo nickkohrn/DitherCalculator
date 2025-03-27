@@ -8,22 +8,26 @@
 import SwiftUI
 
 
-struct FormRowHeader<Content: View>: View {
-    let content: Content
+struct FormRowHeader: View {
+    let string: String
+    let parenthesizedString: String?
 
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    init(string: String, parenthesizedString: String? = nil) {
+        self.string = string
+        self.parenthesizedString = parenthesizedString
     }
 
     var body: some View {
-        content
-            .font(.caption)
-            .fontWeight(.semibold)
+        if let parenthesizedString = parenthesizedString {
+            Text("\(Text(string).font(.caption).fontWeight(.semibold)) (\(Text(parenthesizedString).font(.caption2).foregroundStyle(Color.primary.secondary))")
+        } else {
+            Text(string)
+                .font(.caption)
+                .fontWeight(.semibold)
+        }
     }
 }
 
 #Preview {
-    FormRowHeader {
-        Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-    }
+    FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
 }
