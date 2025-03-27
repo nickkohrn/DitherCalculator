@@ -62,9 +62,9 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
+                            }
                             TextField(0.formatted(), value: $imagingFocalLength, format: .number)
                         }
                         Button {
@@ -77,9 +77,9 @@ struct ContentView: View {
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
+                            }
                             TextField(0.formatted(), value: $imagingPixelSize, format: .number)
                         }
                         Button {
@@ -96,9 +96,9 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Focal Length \(Text("(\(UnitLength.millimeters.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
+                            }
                             TextField(0.formatted(), value: $guidingFocalLength, format: .number)
                         }
                         Button {
@@ -111,9 +111,9 @@ struct ContentView: View {
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Pixel Size \(Text("(\(UnitLength.micrometers.symbol))").font(.caption2).foregroundStyle(Color.primary.secondary))")
+                            }
                             TextField(0.formatted(), value: $guidingPixelSize, format: .number)
                         }
                         Button {
@@ -130,9 +130,9 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Scale")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Scale")
+                            }
                             TextField(1.formatted(), value: $scale, format: .number)
                         }
                         Button {
@@ -145,9 +145,9 @@ struct ContentView: View {
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Maximum Shift")
-                                .font(.caption)
-                                .fontWeight(.semibold)
+                            FormRowHeader {
+                                Text("Maximum Shift")
+                            }
                             TextField(0.formatted(), value: $pixelShift, format: .number)
                         }
                         Button {
