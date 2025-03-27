@@ -67,12 +67,9 @@ struct ContentView: View {
                             }
                             TextField(0.formatted(), value: $imagingFocalLength, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .imagingFocalLength
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
@@ -82,12 +79,9 @@ struct ContentView: View {
                             }
                             TextField(0.formatted(), value: $imagingPixelSize, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .imagingPixelSize
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -101,12 +95,9 @@ struct ContentView: View {
                             }
                             TextField(0.formatted(), value: $guidingFocalLength, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .guidingFocalLength
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
@@ -116,12 +107,9 @@ struct ContentView: View {
                             }
                             TextField(0.formatted(), value: $guidingPixelSize, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .guidingPixelSize
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -135,12 +123,9 @@ struct ContentView: View {
                             }
                             TextField(1.formatted(), value: $scale, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .scale
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
@@ -150,12 +135,9 @@ struct ContentView: View {
                             }
                             TextField(0.formatted(), value: $pixelShift, format: .number)
                         }
-                        Button {
+                        InfoButton {
                             selectedComponent = .pixelShift
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
-                        .buttonStyle(.borderless)
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
