@@ -66,10 +66,12 @@ struct ContentView: View {
                                 selectedComponent = .imagingFocalLength
                             } label: {
                                 FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
                             .accessibilityHint("Learn what this is")
-                            TextField(0.formatted(), value: $imagingFocalLength, format: .number)
+                            TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -79,7 +81,9 @@ struct ContentView: View {
                                 selectedComponent = .imagingPixelSize
                             } label: {
                                 FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
                             .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $imagingPixelSize, format: .number)
@@ -96,7 +100,9 @@ struct ContentView: View {
                                 selectedComponent = .guidingFocalLength
                             } label: {
                                 FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
                             .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $guidingFocalLength, format: .number)
@@ -109,7 +115,9 @@ struct ContentView: View {
                                 selectedComponent = .guidingPixelSize
                             } label: {
                                 FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
                             .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $guidingPixelSize, format: .number)
@@ -126,7 +134,9 @@ struct ContentView: View {
                                 selectedComponent = .scale
                             } label: {
                                 FormRowHeader(string: "Scale")
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityHint("Learn what this is")
                             TextField(1.formatted(), value: $scale, format: .number)
                         }
@@ -138,7 +148,9 @@ struct ContentView: View {
                                 selectedComponent = .pixelShift
                             } label: {
                                 FormRowHeader(string: "Maximum Shift")
+                                    .foregroundStyle(Color.accentColor)
                             }
+                            .buttonStyle(.plain)
                             .accessibilityLabel("Maximum shift in pixels")
                             .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $pixelShift, format: .number)
