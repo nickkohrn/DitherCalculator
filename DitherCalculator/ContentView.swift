@@ -62,18 +62,28 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                            Button {
+                                selectedComponent = .imagingFocalLength
+                            } label: {
+                                FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                            }
+                            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
+                            .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $imagingFocalLength, format: .number)
                         }
-                        InfoButton { selectedComponent = .imagingFocalLength }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                            Button {
+                                selectedComponent = .imagingPixelSize
+                            } label: {
+                                FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                            }
+                            .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
+                            .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $imagingPixelSize, format: .number)
                         }
-                        InfoButton { selectedComponent = .imagingPixelSize }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -82,18 +92,28 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                            Button {
+                                selectedComponent = .guidingFocalLength
+                            } label: {
+                                FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                            }
+                            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
+                            .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $guidingFocalLength, format: .number)
                         }
-                        InfoButton { selectedComponent = .guidingFocalLength }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                            Button {
+                                selectedComponent = .guidingPixelSize
+                            } label: {
+                                FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                            }
+                            .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
+                            .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $guidingPixelSize, format: .number)
                         }
-                        InfoButton { selectedComponent = .guidingPixelSize }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -102,18 +122,27 @@ struct ContentView: View {
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Scale")
+                            Button {
+                                selectedComponent = .scale
+                            } label: {
+                                FormRowHeader(string: "Scale")
+                            }
+                            .accessibilityHint("Learn what this is")
                             TextField(1.formatted(), value: $scale, format: .number)
                         }
-                        InfoButton { selectedComponent = .scale }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
-                            FormRowHeader(string: "Maximum Shift")
+                            Button {
+                                selectedComponent = .pixelShift
+                            } label: {
+                                FormRowHeader(string: "Maximum Shift")
+                            }
+                            .accessibilityLabel("Maximum shift in pixels")
+                            .accessibilityHint("Learn what this is")
                             TextField(0.formatted(), value: $pixelShift, format: .number)
                         }
-                        InfoButton { selectedComponent = .pixelShift }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
@@ -145,10 +174,13 @@ struct ContentView: View {
                             }
                             .imageScale(.small)
                             .font(.caption2)
+                            .accessibilityHidden(true)
                         }
                     }
                     .fontWeight(.semibold)
                     .padding()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Text(formattedResult()))
                 }
                 .background(.bar)
             }
@@ -160,7 +192,21 @@ struct ContentView: View {
             }
             .sensoryFeedback(.selection, trigger: result)
             .fontDesign(.rounded)
+            .onChange(of: result) { oldValue, newValue in
+                guard oldValue != newValue else { return }
+                announceResult()
+            }
         }
+    }
+
+    private func announceResult() {
+        var announcement = AttributedString(localized: formattedResult())
+        announcement.accessibilitySpeechAnnouncementPriority = .high
+        AccessibilityNotification.Announcement(announcement).post()
+    }
+
+    private func formattedResult() -> LocalizedStringResource {
+        "Result: ^[\(result ?? 0) pixel](inflect: true)"
     }
 }
 
