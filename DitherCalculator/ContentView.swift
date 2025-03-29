@@ -5,24 +5,29 @@
 //  Created by Nick Kohrn on 3/22/25.
 //
 
+import Observation
 import SwiftUI
 
-struct ContentView: View {
-    @Environment(\.dynamicTypeSize.isAccessibilitySize) private var isAccessibilitySize
-    @State private var imagingFocalLength: Double?
-    @State private var imagingPixelSize: Double?
-    @State private var guidingFocalLength: Double?
-    @State private var guidingPixelSize: Double?
-    @State private var scale: Double?
-    @State private var pixelShift: Int?
-    @State private var selectedComponent: CalculationComponent?
+@MainActor @Observable
+public final class ContentViewModel {
+    public var imagingFocalLength: Double?
+    public var imagingPixelSize: Double?
+    public var guidingFocalLength: Double?
+    public var guidingPixelSize: Double?
+    public var scale: Double?
+    public var maximumPixelShift: Int?
+    public var selectedComponent: CalculationComponent?
 
-    var result: Int? {
+    public var disableSave: Bool {
+        result == nil
+    }
+
+    public var result: Int? {
         guard let imagingFocalLength,
               let imagingPixelSize,
               let guidingFocalLength,
               let guidingPixelSize,
-              let pixelShift,
+              let maximumPixelShift,
               let scale else {
             return nil
         }
@@ -35,10 +40,15 @@ struct ContentView: View {
                 focalLength: guidingFocalLength,
                 pixelSize: guidingPixelSize
             ),
-            desiredImagingShiftPixels: pixelShift,
+            desiredImagingShiftPixels: maximumPixelShift,
             scale: scale
         ))
     }
+}
+
+struct ContentView: View {
+    @Environment(\.dynamicTypeSize.isAccessibilitySize) private var isAccessibilitySize
+    @Bindable private var viewModel = ContentViewModel()
 
     init(
         imagingFocalLength: Double? = nil,
@@ -46,14 +56,14 @@ struct ContentView: View {
         guidingFocalLength: Double? = nil,
         guidingPixelSize: Double? = nil,
         scale: Double = 1,
-        pixelShift: Int? = nil
+        maximumPixelShift: Int? = nil
     ) {
-        _imagingFocalLength = State(initialValue: imagingFocalLength)
-        _imagingPixelSize = State(initialValue: imagingPixelSize)
-        _guidingFocalLength = State(initialValue: guidingFocalLength)
-        _guidingPixelSize = State(initialValue: guidingPixelSize)
-        _scale = State(initialValue: scale)
-        _pixelShift = State(initialValue: pixelShift)
+        viewModel.imagingFocalLength = imagingFocalLength
+        viewModel.imagingPixelSize = imagingPixelSize
+        viewModel.guidingFocalLength = guidingFocalLength
+        viewModel.guidingPixelSize = guidingPixelSize
+        viewModel.scale = scale
+        viewModel.maximumPixelShift = maximumPixelShift
     }
 
     var body: some View {
@@ -63,7 +73,7 @@ struct ContentView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .imagingFocalLength
+                                viewModel.selectedComponent = .imagingFocalLength
                             } label: {
                                 FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
                                     .foregroundStyle(Color.accentColor)
@@ -78,7 +88,7 @@ struct ContentView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .imagingPixelSize
+                                viewModel.selectedComponent = .imagingPixelSize
                             } label: {
                                 FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
                                     .foregroundStyle(Color.accentColor)
@@ -86,7 +96,7 @@ struct ContentView: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
                             .accessibilityHint("Learn what this is")
-                            TextField(0.formatted(), value: $imagingPixelSize, format: .number)
+                            TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -97,7 +107,7 @@ struct ContentView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .guidingFocalLength
+                                viewModel.selectedComponent = .guidingFocalLength
                             } label: {
                                 FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
                                     .foregroundStyle(Color.accentColor)
@@ -105,14 +115,14 @@ struct ContentView: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
                             .accessibilityHint("Learn what this is")
-                            TextField(0.formatted(), value: $guidingFocalLength, format: .number)
+                            TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .guidingPixelSize
+                                viewModel.selectedComponent = .guidingPixelSize
                             } label: {
                                 FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
                                     .foregroundStyle(Color.accentColor)
@@ -120,7 +130,7 @@ struct ContentView: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
                             .accessibilityHint("Learn what this is")
-                            TextField(0.formatted(), value: $guidingPixelSize, format: .number)
+                            TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -131,29 +141,29 @@ struct ContentView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .scale
+                                viewModel.selectedComponent = .scale
                             } label: {
                                 FormRowHeader(string: "Scale")
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
                             .accessibilityHint("Learn what this is")
-                            TextField(1.formatted(), value: $scale, format: .number)
+                            TextField(1.formatted(), value: $viewModel.scale, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     HStack {
                         VStack(alignment: .leading) {
                             Button {
-                                selectedComponent = .pixelShift
+                                viewModel.selectedComponent = .pixelShift
                             } label: {
-                                FormRowHeader(string: "Maximum Shift")
+                                FormRowHeader(string: "Maximum Pixel Shift")
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel("Maximum shift in pixels")
                             .accessibilityHint("Learn what this is")
-                            TextField(0.formatted(), value: $pixelShift, format: .number)
+                            TextField(0.formatted(), value: $viewModel.maximumPixelShift, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -161,52 +171,54 @@ struct ContentView: View {
                     Label("Control", systemImage: "desktopcomputer")
                 }
             }
-            .keyboardType(.decimalPad)
-            .navigationTitle("Dither Pixels")
             .safeAreaInset(edge: .bottom) {
                 VStack {
-                    VStack {
-                        Text("Pixels")
-                            .frame(maxWidth: .infinity)
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                        Text((result ?? 0).formatted())
-                            .font(.largeTitle)
-                            .contentTransition(.numericText())
-                            .animation(.default, value: result)
-                            .accessibilityAddTraits(.updatesFrequently)
-                        if !isAccessibilitySize {
-                            HStack(spacing: 0) {
-                                Image(systemName: "square.fill")
-                                    .foregroundStyle(.red)
-                                Image(systemName: "square.fill")
-                                    .foregroundStyle(.green)
-                                Image(systemName: "square.fill")
-                                    .foregroundStyle(.blue)
-                            }
-                            .imageScale(.small)
-                            .font(.caption2)
-                            .accessibilityHidden(true)
-                        }
-                    }
-                    .fontWeight(.semibold)
-                    .padding()
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Text(formattedResult()))
+                    Text("Pixels")
+                        .frame(maxWidth: .infinity)
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    Text((viewModel.result ?? 0).formatted())
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .contentTransition(.numericText())
+                        .animation(.default, value: viewModel.result)
+                        .accessibilityAddTraits(.updatesFrequently)
                 }
+                .padding()
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text(formattedResult()))
                 .background(.bar)
             }
-            .sheet(item: $selectedComponent) { component in
+            .keyboardType(.decimalPad)
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $viewModel.selectedComponent) { component in
                 NavigationStack {
                     ComponentDetailsView(component: component)
                 }
                 .presentationDetents([.medium, .large])
             }
-            .sensoryFeedback(.selection, trigger: result)
+            .sensoryFeedback(.selection, trigger: viewModel.result)
             .fontDesign(.rounded)
-            .onChange(of: result) { oldValue, newValue in
+            .onChange(of: viewModel.result) { oldValue, newValue in
                 guard oldValue != newValue else { return }
                 announceResult()
+            }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack(spacing: 0) {
+                        Image(systemName: "square.fill")
+                            .foregroundStyle(.red)
+                        Image(systemName: "square.fill")
+                            .foregroundStyle(.green)
+                        Image(systemName: "square.fill")
+                            .foregroundStyle(.blue)
+                    }
+                    .dynamicTypeSize(.xSmall ..< .xLarge)
+                    .imageScale(.small)
+                    .font(.caption2)
+                    .accessibilityHidden(true)
+                }
             }
         }
     }
@@ -217,8 +229,8 @@ struct ContentView: View {
         AccessibilityNotification.Announcement(announcement).post()
     }
 
-    private func formattedResult() -> LocalizedStringResource {
-        "Result: ^[\(result ?? 0) pixel](inflect: true)"
+    private func formattedResult(includeNewline: Bool = false) -> LocalizedStringResource {
+        "Result: ^[\(viewModel.result ?? 0) pixel](inflect: true)"
     }
 }
 
@@ -229,6 +241,6 @@ struct ContentView: View {
         guidingFocalLength: 200,
         guidingPixelSize: 2.99,
         scale: 1,
-        pixelShift: 10
+        maximumPixelShift: 10
     )
 }

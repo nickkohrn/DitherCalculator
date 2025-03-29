@@ -113,7 +113,7 @@ struct DitherCalculator {
     }
 }
 
-enum CalculationComponent: Int, Identifiable {
+public enum CalculationComponent: Int, Identifiable {
     case imagingFocalLength
     case imagingPixelSize
     case guidingFocalLength
@@ -121,9 +121,9 @@ enum CalculationComponent: Int, Identifiable {
     case scale
     case pixelShift
 
-    var id: RawValue { rawValue }
+    public var id: RawValue { rawValue }
 
-    var title: String {
+    public var title: String {
         switch self {
         case .imagingFocalLength: "Imaging Focal Length"
         case .imagingPixelSize: "Imaging Pixel Size"
@@ -134,7 +134,7 @@ enum CalculationComponent: Int, Identifiable {
         }
     }
 
-    var text: String {
+    public var text: String {
         let measurementFormatter = MeasurementFormatter()
         measurementFormatter.unitStyle = .long
         return switch self {
