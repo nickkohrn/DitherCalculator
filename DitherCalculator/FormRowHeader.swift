@@ -19,7 +19,7 @@ struct FormRowHeader: View {
 
     var body: some View {
         if let parenthesizedString = parenthesizedString {
-            Text("\(Text(string).font(.caption).fontWeight(.semibold)) (\(Text(parenthesizedString).font(.caption2).foregroundStyle(Color.primary.secondary))")
+            Text("\(Text(string).font(.caption).fontWeight(.semibold)) \(Text("(\(parenthesizedString))").font(.caption2).foregroundStyle(Color.primary.secondary))")
         } else {
             Text(string)
                 .font(.caption)
