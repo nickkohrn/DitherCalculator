@@ -17,6 +17,7 @@ struct InfoButton: View {
             Image(systemName: "info.circle")
         }
         .buttonStyle(.borderless)
+        .accessibilityLabel("Details")
     }
 }
 
