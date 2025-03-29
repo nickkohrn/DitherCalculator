@@ -120,6 +120,7 @@ struct ContentView: View {
                     Label("Control", systemImage: "desktopcomputer")
                 }
             }
+            .keyboardType(.decimalPad)
             .navigationTitle("Dither Pixels")
             .safeAreaInset(edge: .bottom) {
                 VStack {
@@ -132,6 +133,7 @@ struct ContentView: View {
                             .font(.largeTitle)
                             .contentTransition(.numericText())
                             .animation(.default, value: result)
+                            .accessibilityAddTraits(.updatesFrequently)
                         if !isAccessibilitySize {
                             HStack(spacing: 0) {
                                 Image(systemName: "square.fill")
