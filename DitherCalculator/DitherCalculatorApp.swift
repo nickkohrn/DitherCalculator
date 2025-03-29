@@ -9,11 +9,18 @@ import SwiftUI
 
 @main
 struct DitherCalculatorApp: App {
+    @State private var cloudKitService = CloudKitService()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.cloudKitService, cloudKitService)
         }
     }
+}
+
+extension EnvironmentValues {
+    @Entry public var cloudKitService = CloudKitService()
 }
 
 struct EquipmentMetadata: Equatable {

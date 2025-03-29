@@ -8,45 +8,8 @@
 import Observation
 import SwiftUI
 
-@MainActor @Observable
-public final class ContentViewModel {
-    public var imagingFocalLength: Double?
-    public var imagingPixelSize: Double?
-    public var guidingFocalLength: Double?
-    public var guidingPixelSize: Double?
-    public var scale: Double?
-    public var maximumPixelShift: Int?
-    public var selectedComponent: CalculationComponent?
-
-    public var disableSave: Bool {
-        result == nil
-    }
-
-    public var result: Int? {
-        guard let imagingFocalLength,
-              let imagingPixelSize,
-              let guidingFocalLength,
-              let guidingPixelSize,
-              let maximumPixelShift,
-              let scale else {
-            return nil
-        }
-        return try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
-            imagingMetadata: EquipmentMetadata(
-                focalLength: imagingFocalLength,
-                pixelSize: imagingPixelSize
-            ),
-            guidingMetadata: EquipmentMetadata(
-                focalLength: guidingFocalLength,
-                pixelSize: guidingPixelSize
-            ),
-            desiredImagingShiftPixels: maximumPixelShift,
-            scale: scale
-        ))
-    }
-}
-
 struct ContentView: View {
+    @Environment(\.cloudKitService) private var cloudKitService
     @Environment(\.dynamicTypeSize.isAccessibilitySize) private var isAccessibilitySize
     @Bindable private var viewModel = ContentViewModel()
 
@@ -198,6 +161,14 @@ struct ContentView: View {
                 }
                 .presentationDetents([.medium, .large])
             }
+            .sheet(isPresented: $viewModel.isShowingSavedConfigurations) {
+                NavigationStack {
+                    SavedConfigurationsView(
+                        viewModel: SavedConfigurationsViewModel(cloudService: cloudKitService)
+                    )
+                }
+                .presentationDetents([.medium, .large])
+            }
             .sensoryFeedback(.selection, trigger: viewModel.result)
             .fontDesign(.rounded)
             .onChange(of: viewModel.result) { oldValue, newValue in
@@ -219,7 +190,23 @@ struct ContentView: View {
                     .font(.caption2)
                     .accessibilityHidden(true)
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Save", action: viewModel.tappedSaveButton)
+                    .disabled(viewModel.disableSave)
+                }
+                ToolbarItem(placement: .navigation) {
+                    Button("Saved Configurations", systemImage: "list.bullet.circle", action: viewModel.tappedSavedConfigurationsButton)
+                        .disabled(viewModel.disableSavedConfigurations)
+                }
             }
+            .alert("New Configuration", isPresented: $viewModel.isShowingSaveAlert) {
+                TextField("Name", text: $viewModel.name)
+                Button("Save", action: viewModel.tappedNewConfigurationSaveButton)
+                Button("Cancel", role: .cancel, action: viewModel.tappedNewConfigurationSaveButton)
+            } message: {
+                Text("Name this configuration.")
+            }
+            .task { await viewModel.task() }
         }
     }
 
