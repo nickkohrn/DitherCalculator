@@ -81,7 +81,7 @@ public struct DitherConfigDetailsView: View {
                     }
                 }
             } else {
-                ContentUnavailableView("Configuration Unavailable", systemImage: "document.badge.gearshape")
+                DitherConfigUnavailableView()
             }
         }
         .navigationTitle("Details")
