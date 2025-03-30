@@ -16,7 +16,7 @@ public struct DitherConfig {
     public let guidingPixelSize: Double
     public let scale: Double
     public let maxPixelShift: Int
-    public let name: String
+    public var name: String
     public let recordID: CKRecord.ID
 
     public init(

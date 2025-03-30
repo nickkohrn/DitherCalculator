@@ -12,14 +12,29 @@ import SwiftUI
 
 @MainActor @Observable
 public final class DitherConfigSaveViewModel {
+    private let cloudSyncService: CloudSyncService
     public var config: DitherConfig
+    public var name: String
     public var isSaving = false
+    public var shouldDismiss = false
 
-    public init(config: DitherConfig) {
-        self.config = config
+    public var disableSave: Bool {
+        result() == nil || trimmedName.isEmpty
     }
 
-    public func result() -> Int {
+    public var formattedResult: LocalizedStringResource {
+        "^[\(result() ?? 0) pixel](inflect: true)"
+    }
+
+    public var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    public init(config: DitherConfig, cloudSyncService: any CloudSyncService) {
+        self.config = config
+        self.cloudSyncService = cloudSyncService
+        name = config.name
+    }
+
+    public func result() -> Int? {
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: config.imagingFocalLength,
@@ -32,29 +47,33 @@ public final class DitherConfigSaveViewModel {
             desiredImagingShiftPixels: config.maxPixelShift,
             scale: config.scale
         ))
-        return result ?? 0
+        return result
     }
 
-    public func tappedCancelButton() {}
-
-    public func tappedSaveButton() {}
+    public func tappedSaveButton() {
+        isSaving = true
+        config.name = trimmedName
+        Task {
+            try await cloudSyncService.save(config.newCKRecord())
+            await MainActor.run {
+                shouldDismiss = true
+            }
+        }
+    }
 }
 
 public struct DitherConfigSaveView: View {
     @Environment(\.dismiss) private var dismiss
-    private let viewModel: DitherConfigSaveViewModel
+    @Bindable private var viewModel: DitherConfigSaveViewModel
 
     public init(viewModel: DitherConfigSaveViewModel) {
         self.viewModel = viewModel
     }
 
     public var body: some View {
-        List {
+        Form {
             Section {
-                LabeledContent("Name", value: viewModel.config.name)
-                LabeledContent("Result") {
-                    Text("^[\(viewModel.result()) pixel](inflect: true)")
-                }
+                TextField("Name", text: $viewModel.name, axis: .vertical)
             }
             Section {
                 LabeledContent("Focal Length", value: viewModel.config.imagingFocalLengthMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
@@ -76,17 +95,31 @@ public struct DitherConfigSaveView: View {
             } header: {
                 ControlSectionHeader()
             }
+            Section {
+                LabeledContent("Result") {
+                    Text(viewModel.formattedResult)
+                }
+            }
         }
         .navigationTitle("New Config")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                CancelButton { viewModel.tappedCancelButton() }
+                CancelButton { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                SaveButton { viewModel.tappedSaveButton() }
+                if viewModel.isSaving {
+                    ProgressView()
+                } else {
+                    SaveButton { viewModel.tappedSaveButton() }
+                        .disabled(viewModel.disableSave)
+                }
             }
         }
+        .onChange(of: viewModel.shouldDismiss) { _, newValue in
+            if newValue { dismiss() }
+        }
+        .disabled(viewModel.isSaving)
     }
 }
 
@@ -101,8 +134,12 @@ public struct DitherConfigSaveView: View {
                     guidingPixelSize: 2.99,
                     scale: 1,
                     maxPixelShift: 10,
-                    name: "Starfront Rig",
+                    name: "",
                     recordID: CKRecord.ID(recordName: UUID().uuidString)
+                ),
+                cloudSyncService: MockCloudSyncService(
+                    accountStatus: .success(.available),
+                    save: .success(())
                 )
             )
         )

@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/30/25.
 //
 
+import CloudKit
 import Observation
 import SwiftUI
 
@@ -17,9 +18,15 @@ public final class CalculationViewModel {
     public var scale: Double?
     public var maxPixelShift: Int?
     public var selectedComponent: CalculationComponent?
-    public var isShowingSaveView = false
+    public var configToSave: DitherConfig?
 
-    public func result() -> Int {
+    public var disableSave: Bool {
+        result() == nil
+    }
+
+    public init() {}
+
+    public func result() -> Int? {
         guard
             let imagingFocalLength,
             let imagingPixelSize,
@@ -27,7 +34,7 @@ public final class CalculationViewModel {
             let guidingPixelSize,
             let scale,
             let maxPixelShift
-        else { return 0 }
+        else { return nil }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: imagingFocalLength,
@@ -40,17 +47,35 @@ public final class CalculationViewModel {
             desiredImagingShiftPixels: maxPixelShift,
             scale: scale
         ))
-        return result ?? 0
+        return result
     }
 
-    public init() {}
 
     public func tappedSaveButton() {
-        isShowingSaveView = true
+        guard
+            let imagingFocalLength,
+            let imagingPixelSize,
+            let guidingFocalLength,
+            let guidingPixelSize,
+            let scale,
+            let maxPixelShift
+        else { return }
+        let config = DitherConfig(
+            imagingFocalLength: imagingFocalLength,
+            imagingPixelSize: imagingPixelSize,
+            guidingFocalLength: guidingFocalLength,
+            guidingPixelSize: guidingPixelSize,
+            scale: scale,
+            maxPixelShift: maxPixelShift,
+            name: "",
+            recordID: CKRecord.ID(recordName: UUID().uuidString)
+        )
+        configToSave = config
     }
 }
 
 public struct CalculationView: View {
+    @Environment(\.cloudService) private var cloudService
     @Bindable private var viewModel: CalculationViewModel
 
     public init(viewModel: CalculationViewModel) {
@@ -59,11 +84,6 @@ public struct CalculationView: View {
 
     public var body: some View {
         Form {
-            Section {
-                LabeledContent("Result") {
-                    Text("^[\(viewModel.result()) pixel](inflect: true)")
-                }
-            }
             Section {
                 HStack {
                     VStack(alignment: .leading) {
@@ -161,12 +181,32 @@ public struct CalculationView: View {
             } header: {
                 ControlSectionHeader()
             }
+            Section {
+                LabeledContent("Result") {
+                    if let result = viewModel.result() {
+                        Text("^[\(result) pixel](inflect: true)")
+                    } else {
+                        Text("^[\(0) pixel](inflect: true)")
+                    }
+                }
+            }
         }
         .navigationTitle("Calulate Dither Amount")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 SaveButton { viewModel.tappedSaveButton() }
+                    .disabled(viewModel.disableSave)
+            }
+        }
+        .sheet(item: $viewModel.configToSave) { config in
+            NavigationStack {
+                DitherConfigSaveView(
+                    viewModel: DitherConfigSaveViewModel(
+                        config: config,
+                        cloudSyncService: cloudService
+                    )
+                )
             }
         }
     }

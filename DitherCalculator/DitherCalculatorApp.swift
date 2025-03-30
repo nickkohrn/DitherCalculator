@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct DitherCalculatorApp: App {
-//    @State private var cloudKitService = CloudKitService()
-
     var body: some Scene {
         WindowGroup {
-            Text("App")
+            NavigationStack {
+                CalculationView(viewModel: CalculationViewModel())
+            }
         }
     }
 }
