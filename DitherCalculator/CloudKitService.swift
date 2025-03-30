@@ -29,4 +29,8 @@ public final class CloudKitService: CloudService {
         let records = result.matchResults.compactMap { try? $0.1.get() }
         return records.compactMap(DitherConfiguration.init)
     }
+
+    public func record(for ditherConfiguration: DitherConfiguration) async throws -> CKRecord? {
+        try await CKContainer.default().privateCloudDatabase.record(for: ditherConfiguration.recordID)
+    }
 }

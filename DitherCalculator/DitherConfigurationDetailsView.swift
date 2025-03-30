@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/29/25.
 //
 
+import CloudKit
 import Observation
 import SwiftUI
 
@@ -12,6 +13,7 @@ import SwiftUI
 @Observable
 public final class DitherConfigurationDetailsViewModel {
     public let configuration: DitherConfiguration
+    public var isShowingEditView = false
 
     private var result: Int? {
         try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
@@ -39,14 +41,19 @@ public final class DitherConfigurationDetailsViewModel {
     public init(configuration: DitherConfiguration) {
         self.configuration = configuration
     }
+
+    public func tappedEditButton() {
+        isShowingEditView = true
+    }
 }
 
 public struct DitherConfigurationDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    private let viewModel: DitherConfigurationDetailsViewModel
+    @Environment(\.cloudKitService) private var cloudKitService
+    @Bindable private var viewModel: DitherConfigurationDetailsViewModel
 
     public init(viewModel: DitherConfigurationDetailsViewModel) {
-        self.viewModel = viewModel
+        _viewModel = Bindable(viewModel)
     }
 
     public var body: some View {
@@ -93,6 +100,19 @@ public struct DitherConfigurationDetailsView: View {
             ToolbarItem(placement: .cancellationAction) {
                 CloseButton { dismiss() }
             }
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit", action: viewModel.tappedEditButton)
+            }
+        }
+        .sheet(isPresented: $viewModel.isShowingEditView) {
+            NavigationStack {
+                EditDitherConfigurationView(
+                    viewModel: EditDitherConfigurationViewModel(
+                        cloudService: cloudKitService,
+                        configuration: viewModel.configuration
+                    )
+                )
+            }
         }
     }
 }
@@ -109,7 +129,8 @@ public struct DitherConfigurationDetailsView: View {
                     scale: 1,
                     maximumPixelShift: 10,
                     name: "Starfront Rig",
-                    uuidString: UUID().uuidString
+                    uuidString: UUID().uuidString,
+                    recordID: CKRecord.ID(recordName: "")
                 )
             )
         )

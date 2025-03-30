@@ -107,10 +107,22 @@ public struct SavedConfigurationsView: View {
                             scale: 1,
                             maximumPixelShift: 10,
                             name: "Starfront Rig",
-                            uuidString: UUID().uuidString
+                            uuidString: UUID().uuidString,
+                            recordID: CKRecord.ID(recordName: "")
                         )
                     ],
-                    save: {}
+                    save: {},
+                    recordForDitherConfiguration: DitherConfiguration(
+                        imagingFocalLength: 382,
+                        imagingPixelSize: 3.76,
+                        guidingFocalLength: 200,
+                        guidingPixelSize: 2.99,
+                        scale: 1,
+                        maximumPixelShift: 10,
+                        name: "Starfront Rig",
+                        uuidString: UUID().uuidString,
+                        recordID: CKRecord.ID(recordName: "")
+                    ).record
                 )
             )
         )
@@ -119,6 +131,7 @@ public struct SavedConfigurationsView: View {
 
 public protocol CloudService {
     func checkAccountStatus() async throws -> CKAccountStatus
+    func record(for ditherConfiguration: DitherConfiguration) async throws -> CKRecord?
     func fetchDitherConfigurations() async throws -> [DitherConfiguration]
     func save(_ record: CKRecord) async throws
 }
@@ -127,15 +140,18 @@ final class MockCloudService: CloudService {
     let accountStatus: CKAccountStatus
     let configurations: [DitherConfiguration]
     let save: () throws -> Void
+    let recordForDitherConfiguration: CKRecord?
 
     init(
         accountStatus: CKAccountStatus,
         configurations: [DitherConfiguration],
-        save: @escaping () throws -> Void
+        save: @escaping () -> Void,
+        recordForDitherConfiguration: CKRecord?
     ) {
         self.accountStatus = accountStatus
         self.configurations = configurations
         self.save = save
+        self.recordForDitherConfiguration = recordForDitherConfiguration
     }
 
     func checkAccountStatus() async throws -> CKAccountStatus {
@@ -148,5 +164,9 @@ final class MockCloudService: CloudService {
     
     func save(_ record: CKRecord) async throws {
         try save()
+    }
+
+    func record(for ditherConfiguration: DitherConfiguration) async throws -> CKRecord? {
+        recordForDitherConfiguration
     }
 }

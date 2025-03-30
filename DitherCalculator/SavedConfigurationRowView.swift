@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/29/25.
 //
 
+import CloudKit
 import Observation
 import SwiftUI
 
@@ -66,7 +67,8 @@ public struct SavedConfigurationRowView: View {
                 scale: 1,
                 maximumPixelShift: 10,
                 name: "Starfront Rig",
-                uuidString: UUID().uuidString
+                uuidString: UUID().uuidString,
+                recordID: CKRecord.ID(recordName: "")
             )
         )
     )

@@ -129,7 +129,8 @@ public final class ContentViewModel {
             scale: scale,
             maximumPixelShift: maximumPixelShift,
             name: trimmedName,
-            uuidString: UUID().uuidString
+            uuidString: UUID().uuidString,
+            recordID: CKRecord.ID(recordName: UUID().uuidString)
         )
         try await cloudKitService.save(configuration.record)
     }

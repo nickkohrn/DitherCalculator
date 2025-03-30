@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/22/25.
 //
 
+import CloudKit
 import Observation
 import SwiftUI
 
@@ -180,7 +181,6 @@ struct ContentView: View {
                 }
                 ToolbarItem(placement: .navigation) {
                     Button("Saved Configurations", systemImage: "list.bullet.circle", action: viewModel.tappedSavedConfigurationsButton)
-                        .disabled(viewModel.disableSavedConfigurations)
                 }
             }
             .alert("New Configuration", isPresented: $viewModel.isShowingSaveAlert) {
@@ -216,7 +216,8 @@ struct ContentView: View {
                 scale: 1,
                 maximumPixelShift: 10,
                 name: "Starfront Rig",
-                uuidString: UUID().uuidString
+                uuidString: UUID().uuidString,
+                recordID: CKRecord.ID(recordName: "")
             )
         ))
     }

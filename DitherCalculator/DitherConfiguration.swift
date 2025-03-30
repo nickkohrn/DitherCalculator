@@ -17,6 +17,7 @@ public struct DitherConfiguration: Hashable {
     public let maximumPixelShift: Int
     public let name: String
     public let uuidString: String
+    public let recordID: CKRecord.ID
 
     public var imagingFocalLengthMeasurement: Measurement<UnitLength> {
         Measurement(value: imagingFocalLength, unit: .millimeters)
@@ -53,7 +54,10 @@ public enum DitherConfigurationKeys: String {
 
 extension DitherConfiguration {
     public var record: CKRecord {
-        let record = CKRecord(recordType: DitherConfigurationKeys.type.rawValue)
+        let record = CKRecord(
+            recordType: DitherConfigurationKeys.type.rawValue,
+            recordID: CKRecord.ID(recordName: UUID().uuidString)
+        )
         record[DitherConfigurationKeys.imagingFocalLength.rawValue] = imagingFocalLength
         record[DitherConfigurationKeys.imagingPixelSize.rawValue] = imagingPixelSize
         record[DitherConfigurationKeys.guidingFocalLength.rawValue] = guidingFocalLength
@@ -84,7 +88,8 @@ extension DitherConfiguration {
             scale: scale,
             maximumPixelShift: maximumPixelShift,
             name: name,
-            uuidString: uuidString
+            uuidString: uuidString,
+            recordID: record.recordID
         )
     }
 }
