@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct DitherCalculatorApp: App {
-    @State private var cloudKitService = CloudKitService()
+//    @State private var cloudKitService = CloudKitService()
 
     var body: some Scene {
         WindowGroup {
@@ -18,9 +18,9 @@ struct DitherCalculatorApp: App {
     }
 }
 
-extension EnvironmentValues {
-    @Entry public var cloudKitService = CloudKitService()
-}
+//extension EnvironmentValues {
+//    @Entry public var cloudKitService = CloudKitService()
+//}
 
 struct EquipmentMetadata: Equatable {
     let focalLength: Measurement<UnitLength>
