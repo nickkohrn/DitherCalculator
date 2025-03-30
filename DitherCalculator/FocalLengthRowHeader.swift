@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-public struct FocalLengthRowHeader: View {
-    public var body: some View {
-        FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
-            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
-    }
-}
-
-#Preview {
-    FocalLengthRowHeader()
-}
+//public struct FocalLengthRowHeader: View {
+//    public var body: some View {
+//        FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+//            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
+//    }
+//}
+//
+//#Preview {
+//    FocalLengthRowHeader()
+//}

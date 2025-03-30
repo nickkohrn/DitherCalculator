@@ -7,10 +7,10 @@
 
 import Foundation
 
-extension MeasurementFormatter {
-    static let longUnitFormatter: MeasurementFormatter = {
-        let formatter = MeasurementFormatter()
-        formatter.unitStyle = .long
-        return formatter
-    }()
-}
+//extension MeasurementFormatter {
+//    static let longUnitFormatter: MeasurementFormatter = {
+//        let formatter = MeasurementFormatter()
+//        formatter.unitStyle = .long
+//        return formatter
+//    }()
+//}

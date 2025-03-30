@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ControlSectionHeader: View {
-    var body: some View {
-        Label("Control", systemImage: "desktopcomputer")
-    }
-}
-
-#Preview {
-    ControlSectionHeader()
-}
+//struct ControlSectionHeader: View {
+//    var body: some View {
+//        Label("Control", systemImage: "desktopcomputer")
+//    }
+//}
+//
+//#Preview {
+//    ControlSectionHeader()
+//}

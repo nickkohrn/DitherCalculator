@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-public struct GuidingSectionHeader: View {
-    public var body: some View {
-        Label("Guiding", systemImage: "dot.scope")
-    }
-}
-
-#Preview {
-    GuidingSectionHeader()
-}
+//public struct GuidingSectionHeader: View {
+//    public var body: some View {
+//        Label("Guiding", systemImage: "dot.scope")
+//    }
+//}
+//
+//#Preview {
+//    GuidingSectionHeader()
+//}

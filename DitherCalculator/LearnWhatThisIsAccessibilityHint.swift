@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-public struct LearnWhatThisIsAccessibilityHint: ViewModifier {
-    public func body(content: Content) -> some View {
-        content.accessibilityHint("Learn what this is")
-    }
-}
-
-extension View {
-    func learnWhatThisIsAccessibilityHint() -> some View {
-        self.modifier(LearnWhatThisIsAccessibilityHint())
-    }
-}
+//public struct LearnWhatThisIsAccessibilityHint: ViewModifier {
+//    public func body(content: Content) -> some View {
+//        content.accessibilityHint("Learn what this is")
+//    }
+//}
+//
+//extension View {
+//    func learnWhatThisIsAccessibilityHint() -> some View {
+//        self.modifier(LearnWhatThisIsAccessibilityHint())
+//    }
+//}

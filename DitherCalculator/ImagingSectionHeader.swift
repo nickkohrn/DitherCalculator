@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-public struct ImagingSectionHeader: View {
-    public var body: some View {
-        Label("Imaging", systemImage: "camera")
-    }
-}
-
-#Preview {
-    ImagingSectionHeader()
-}
+//public struct ImagingSectionHeader: View {
+//    public var body: some View {
+//        Label("Imaging", systemImage: "camera")
+//    }
+//}
+//
+//#Preview {
+//    ImagingSectionHeader()
+//}

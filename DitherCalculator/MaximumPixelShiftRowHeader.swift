@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-public struct MaximumPixelShiftRowHeader: View {
-    public var body: some View {
-        FormRowHeader(string: "Maximum Pixel Shift")
-    }
-}
-
-#Preview {
-    MaximumPixelShiftRowHeader()
-}
+//public struct MaximumPixelShiftRowHeader: View {
+//    public var body: some View {
+//        FormRowHeader(string: "Maximum Pixel Shift")
+//    }
+//}
+//
+//#Preview {
+//    MaximumPixelShiftRowHeader()
+//}

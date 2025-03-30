@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct InfoButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            Image(systemName: "info.circle")
-        }
-        .buttonStyle(.borderless)
-        .accessibilityLabel("Details")
-    }
-}
-
-#Preview {
-    InfoButton {}
-}
+//struct InfoButton: View {
+//    let action: () -> Void
+//
+//    var body: some View {
+//        Button {
+//            action()
+//        } label: {
+//            Image(systemName: "info.circle")
+//        }
+//        .buttonStyle(.borderless)
+//        .accessibilityLabel("Details")
+//    }
+//}
+//
+//#Preview {
+//    InfoButton {}
+//}
