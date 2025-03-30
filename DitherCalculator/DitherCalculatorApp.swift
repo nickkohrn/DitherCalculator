@@ -13,7 +13,7 @@ struct DitherCalculatorApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: ContentViewModel(ditherConfiguration: nil))
                 .environment(\.cloudKitService, cloudKitService)
         }
     }

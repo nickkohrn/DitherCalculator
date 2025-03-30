@@ -55,6 +55,16 @@ public final class ContentViewModel {
         ))
     }
 
+    public init(ditherConfiguration: DitherConfiguration?) {
+        self.imagingFocalLength = ditherConfiguration?.imagingFocalLength
+        self.imagingPixelSize = ditherConfiguration?.imagingPixelSize
+        self.guidingFocalLength = ditherConfiguration?.guidingFocalLength
+        self.guidingPixelSize = ditherConfiguration?.guidingPixelSize
+        self.scale = ditherConfiguration?.scale
+        self.maximumPixelShift = ditherConfiguration?.maximumPixelShift
+        self.name = ditherConfiguration?.name ?? ""
+    }
+
     private func fetchAccountStatus() async throws -> CKAccountStatus {
         try await cloudKitService.checkAccountStatus()
     }

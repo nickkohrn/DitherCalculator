@@ -84,14 +84,7 @@ public struct SavedConfigurationsView: View {
         }
         .sheet(item: $viewModel.selectedConfiguration) { configuration in
             NavigationStack {
-                ContentView(
-                    imagingFocalLength: configuration.imagingFocalLength,
-                    imagingPixelSize: configuration.imagingPixelSize,
-                    guidingFocalLength: configuration.guidingFocalLength,
-                    guidingPixelSize: configuration.guidingPixelSize,
-                    scale: configuration.scale,
-                    maximumPixelShift: configuration.maximumPixelShift
-                )
+                
             }
         }
     }

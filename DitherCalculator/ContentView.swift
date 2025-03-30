@@ -11,22 +11,10 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.cloudKitService) private var cloudKitService
     @Environment(\.dynamicTypeSize.isAccessibilitySize) private var isAccessibilitySize
-    @Bindable private var viewModel = ContentViewModel()
+    @Bindable private var viewModel: ContentViewModel
 
-    init(
-        imagingFocalLength: Double? = nil,
-        imagingPixelSize: Double? = nil,
-        guidingFocalLength: Double? = nil,
-        guidingPixelSize: Double? = nil,
-        scale: Double = 1,
-        maximumPixelShift: Int? = nil
-    ) {
-        viewModel.imagingFocalLength = imagingFocalLength
-        viewModel.imagingPixelSize = imagingPixelSize
-        viewModel.guidingFocalLength = guidingFocalLength
-        viewModel.guidingPixelSize = guidingPixelSize
-        viewModel.scale = scale
-        viewModel.maximumPixelShift = maximumPixelShift
+    init(viewModel: ContentViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -38,12 +26,11 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .imagingFocalLength
                             } label: {
-                                FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                                FocalLengthRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
-                            .accessibilityHint("Learn what this is")
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
                         }
                     }
@@ -53,18 +40,17 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .imagingPixelSize
                             } label: {
-                                FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                                PixelSizeRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
-                            .accessibilityHint("Learn what this is")
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
-                    Label("Imaging", systemImage: "camera")
+                    ImagingSectionHeader()
                 }
                 Section {
                     HStack {
@@ -72,12 +58,11 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .guidingFocalLength
                             } label: {
-                                FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
+                                FocalLengthRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
-                            .accessibilityHint("Learn what this is")
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
                         }
                     }
@@ -87,18 +72,17 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .guidingPixelSize
                             } label: {
-                                FormRowHeader(string: "Pixel Size", parenthesizedString: UnitLength.micrometers.symbol)
+                                PixelSizeRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Pixel size in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.micrometers))")
-                            .accessibilityHint("Learn what this is")
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
-                    Label("Guiding", systemImage: "dot.scope")
+                    GuidingSectionHeader()
                 }
                 Section {
                     HStack {
@@ -106,11 +90,11 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .scale
                             } label: {
-                                FormRowHeader(string: "Scale")
+                                ScaleRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityHint("Learn what this is")
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(1.formatted(), value: $viewModel.scale, format: .number)
                         }
                     }
@@ -120,18 +104,18 @@ struct ContentView: View {
                             Button {
                                 viewModel.selectedComponent = .pixelShift
                             } label: {
-                                FormRowHeader(string: "Maximum Pixel Shift")
+                                MaximumPixelShiftRowHeader()
                                     .foregroundStyle(Color.accentColor)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Maximum shift in pixels")
-                            .accessibilityHint("Learn what this is")
+                            .maximumShiftInPixelsAccessibilityLabel()
+                            .learnWhatThisIsAccessibilityHint()
                             TextField(0.formatted(), value: $viewModel.maximumPixelShift, format: .number)
                         }
                     }
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 } header: {
-                    Label("Control", systemImage: "desktopcomputer")
+                    ControlSectionHeader()
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -222,12 +206,18 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(
-        imagingFocalLength: 382,
-        imagingPixelSize: 3.76,
-        guidingFocalLength: 200,
-        guidingPixelSize: 2.99,
-        scale: 1,
-        maximumPixelShift: 10
-    )
+    NavigationStack {
+        ContentView(viewModel: ContentViewModel(
+            ditherConfiguration: DitherConfiguration(
+                imagingFocalLength: 382,
+                imagingPixelSize: 3.76,
+                guidingFocalLength: 200,
+                guidingPixelSize: 2.99,
+                scale: 1,
+                maximumPixelShift: 10,
+                name: "Starfront Rig",
+                uuidString: UUID().uuidString
+            )
+        ))
+    }
 }
