@@ -14,6 +14,10 @@ import SwiftUI
 public final class DitherConfigDetailsViewModel {
     public var config: DitherConfig?
 
+    public init(config: DitherConfig? = nil) {
+        self.config = config
+    }
+
     public func result() -> Int {
         guard let config else { return 0 }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
@@ -29,10 +33,6 @@ public final class DitherConfigDetailsViewModel {
             scale: config.scale
         ))
         return result ?? 0
-    }
-
-    public func onAppear(with config: DitherConfig?) {
-        self.config = config
     }
 
     public func tappedDeleteButton() {}
@@ -98,9 +98,6 @@ public struct DitherConfigDetailsView: View {
                     DeleteButton(action: viewModel.tappedDeleteButton)
                 }
             }
-        }
-        .onAppear {
-            viewModel.onAppear(with: ditherConfig)
         }
     }
 }

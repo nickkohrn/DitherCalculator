@@ -240,8 +240,8 @@ public struct DitherConfigEditView: View {
 
 #Preview("Available") {
     let cloudSyncService = MockCloudSyncService(
-        accountStatus: .available,
-        recordForID: DitherConfig(
+        accountStatus: .success(.available),
+        recordForID: .success(DitherConfig(
             imagingFocalLength: 382,
             imagingPixelSize: 3.76,
             guidingFocalLength: 200,
@@ -250,7 +250,7 @@ public struct DitherConfigEditView: View {
             maxPixelShift: 10,
             name: "Starfront Rig",
             recordID: CKRecord.ID(recordName: UUID().uuidString)
-        ).newCKRecord()
+        ).newCKRecord())
     )
     NavigationStack {
         DitherConfigEditView(viewModel: DitherConfigEditViewModel(syncService: cloudSyncService))
@@ -268,7 +268,7 @@ public struct DitherConfigEditView: View {
 }
 
 #Preview("Unavailable") {
-    let cloudSyncService = MockCloudSyncService(accountStatus: .available)
+    let cloudSyncService = MockCloudSyncService(accountStatus: .success(.available))
     NavigationStack {
         DitherConfigEditView(viewModel: DitherConfigEditViewModel(syncService: cloudSyncService))
     }
