@@ -17,6 +17,22 @@ public struct DitherConfiguration: Hashable {
     public let maximumPixelShift: Int
     public let name: String
     public let uuidString: String
+
+    public var imagingFocalLengthMeasurement: Measurement<UnitLength> {
+        Measurement(value: imagingFocalLength, unit: .millimeters)
+    }
+
+    public var imagingPixelSizeMeasurement: Measurement<UnitLength> {
+        Measurement(value: imagingPixelSize, unit: .micrometers)
+    }
+
+    public var guidingFocalLengthMeasurement: Measurement<UnitLength> {
+        Measurement(value: guidingFocalLength, unit: .millimeters)
+    }
+
+    public var guidingPixelSizeMeasurement: Measurement<UnitLength> {
+        Measurement(value: guidingPixelSize, unit: .micrometers)
+    }
 }
 
 extension DitherConfiguration: Identifiable {
@@ -55,7 +71,7 @@ extension DitherConfiguration {
             let imagingPixelSize = record[DitherConfigurationKeys.imagingPixelSize.rawValue] as? Double,
             let guidingFocalLength = record[DitherConfigurationKeys.guidingFocalLength.rawValue] as? Double,
             let guidingPixelSize = record[DitherConfigurationKeys.guidingPixelSize.rawValue] as? Double,
-            let scale = record[DitherConfigurationKeys.imagingFocalLength.rawValue] as? Double,
+            let scale = record[DitherConfigurationKeys.scale.rawValue] as? Double,
             let maximumPixelShift = record[DitherConfigurationKeys.maximumPixelShift.rawValue] as? Int,
             let name = record[DitherConfigurationKeys.name.rawValue] as? String,
             let uuidString = record[DitherConfigurationKeys.uuidString.rawValue] as? String

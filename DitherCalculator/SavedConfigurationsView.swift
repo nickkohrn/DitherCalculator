@@ -84,7 +84,9 @@ public struct SavedConfigurationsView: View {
         }
         .sheet(item: $viewModel.selectedConfiguration) { configuration in
             NavigationStack {
-                
+                DitherConfigurationDetailsView(
+                    viewModel: DitherConfigurationDetailsViewModel(configuration: configuration)
+                )
             }
         }
     }
