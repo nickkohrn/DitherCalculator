@@ -30,6 +30,16 @@ public final class SavedDitherConfigurationsViewModel {
         }
     }
 
+    public func didEditConfig(config: DitherConfig) {
+        guard let index = (configs.firstIndex { currentConfig in
+            currentConfig.id == config.id
+        }) else {
+            print("Expected index of config with id '\(config.id)'")
+            return
+        }
+        configs[index] = config
+    }
+
     private func fetchConfigs() async {
         await MainActor.run {
             isLoading = true
@@ -109,6 +119,9 @@ public struct SavedDitherConfigurationsView: View {
                         config: config,
                         didDeleteConfig: { recordID in
                             viewModel.didDeleteConfig(id: recordID)
+                        },
+                        didEditConfig: { config in
+                            viewModel.didEditConfig(config: config)
                         }
                     )
                 )

@@ -12,25 +12,33 @@ import SwiftUI
 
 @MainActor @Observable
 public final class DitherConfigDetailsViewModel {
-    private let cloudService: any CloudSyncService
-    public var config: DitherConfig?
+    public let cloudService: any CloudSyncService
+    public private(set) var config: DitherConfig
     public var isShowingDeleteConfirmation = false
     public var shouldDismiss = false
     public var isDeleting = false
     public let didDeleteConfig: (CKRecord.ID) -> Void
+    public let didEditConfig: (DitherConfig) -> Void
+    public var isShowingEditView = false
 
     public init(
         cloudService: any CloudSyncService,
-        config: DitherConfig? = nil,
-        didDeleteConfig: @escaping (CKRecord.ID) -> Void
+        config: DitherConfig,
+        didDeleteConfig: @escaping (CKRecord.ID) -> Void,
+        didEditConfig: @escaping (DitherConfig) -> Void
     ) {
         self.cloudService = cloudService
         self.config = config
         self.didDeleteConfig = didDeleteConfig
+        self.didEditConfig = didEditConfig
+    }
+
+    public func didEditConfig(config: DitherConfig) {
+        self.config = config
+        didEditConfig(config)
     }
 
     public func result() -> Int {
-        guard let config else { return 0 }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: config.imagingFocalLength,
@@ -55,7 +63,6 @@ public final class DitherConfigDetailsViewModel {
     }
 
     public func tappedDeleteConfirmationConfirm() {
-        guard let config else { return }
         isShowingDeleteConfirmation = false
         isDeleting = true
         Task {
@@ -71,11 +78,12 @@ public final class DitherConfigDetailsViewModel {
         }
     }
 
-    public func tappedEditButton() {}
+    public func tappedEditButton() {
+        isShowingEditView = true
+    }
 }
 
 public struct DitherConfigDetailsView: View {
-    @Environment(\.ditherConfig) private var ditherConfig
     @Environment(\.dismiss) private var dismiss
     @Bindable private var viewModel: DitherConfigDetailsViewModel
 
@@ -84,40 +92,34 @@ public struct DitherConfigDetailsView: View {
     }
 
     public var body: some View {
-        VStack {
-            if let config = viewModel.config {
-                List {
-                    Section {
-                        LabeledContent("Name", value: config.name)
-                    }
-                    Section {
-                        LabeledContent("Focal Length", value: config.imagingFocalLengthMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
-                        LabeledContent("Pixel Size", value: config.imagingPixelSizeMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
-                    } header: {
-                        ImagingSectionHeader()
-                    }
-                    Section {
-                        LabeledContent("Focal Length", value: config.guidingFocalLengthMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
-                        LabeledContent("Pixel Size", value: config.guidingPixelSizeMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
-                    } header: {
-                        GuidingSectionHeader()
-                    }
-                    Section {
-                        LabeledContent("Scale", value: config.scale.formatted())
-                        LabeledContent("Max Shift") {
-                            Text("^[\(config.maxPixelShift) pixel](inflect: true)")
-                        }
-                    } header: {
-                        ControlSectionHeader()
-                    }
-                    Section {
-                        LabeledContent("Result") {
-                            Text("^[\(viewModel.result()) pixel](inflect: true)")
-                        }
-                    }
+        List {
+            Section {
+                LabeledContent("Name", value: viewModel.config.name)
+            }
+            Section {
+                LabeledContent("Focal Length", value: viewModel.config.imagingFocalLengthMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+                LabeledContent("Pixel Size", value: viewModel.config.imagingPixelSizeMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+            } header: {
+                ImagingSectionHeader()
+            }
+            Section {
+                LabeledContent("Focal Length", value: viewModel.config.guidingFocalLengthMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+                LabeledContent("Pixel Size", value: viewModel.config.guidingPixelSizeMeasurement.formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+            } header: {
+                GuidingSectionHeader()
+            }
+            Section {
+                LabeledContent("Scale", value: viewModel.config.scale.formatted())
+                LabeledContent("Max Shift") {
+                    Text("^[\(viewModel.config.maxPixelShift) pixel](inflect: true)")
                 }
-            } else {
-                DitherConfigUnavailableView()
+            } header: {
+                ControlSectionHeader()
+            }
+            Section {
+                LabeledContent("Result") {
+                    Text("^[\(viewModel.result()) pixel](inflect: true)")
+                }
             }
         }
         .navigationTitle("Details")
@@ -126,21 +128,32 @@ public struct DitherConfigDetailsView: View {
             ToolbarItem(placement: .cancellationAction) {
                 CloseButton { dismiss() }
             }
-            if viewModel.config != nil {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Edit", action: viewModel.tappedEditButton)
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    if viewModel.isDeleting {
-                        Button {
-                            // no-op
-                        } label: {
-                            ProgressView()
-                        }
-                    } else {
-                        DeleteButton(action: viewModel.tappedDeleteButton)
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit", action: viewModel.tappedEditButton)
+            }
+            ToolbarItem(placement: .bottomBar) {
+                if viewModel.isDeleting {
+                    Button {
+                        // no-op
+                    } label: {
+                        ProgressView()
                     }
+                } else {
+                    DeleteButton(action: viewModel.tappedDeleteButton)
                 }
+            }
+        }
+        .sheet(isPresented: $viewModel.isShowingEditView) {
+            NavigationStack {
+                DitherConfigEditView(
+                    viewModel: DitherConfigEditViewModel(
+                        syncService: viewModel.cloudService,
+                        config: viewModel.config,
+                        didEditConfig: { config in
+                            viewModel.didEditConfig(config: config)
+                        }
+                    )
+                )
             }
         }
         .confirmationDialog(
@@ -170,31 +183,18 @@ public struct DitherConfigDetailsView: View {
                     accountStatus: .success(.available),
                     delete: .success(CKRecord.ID(recordName: UUID().uuidString))
                 ),
-                didDeleteConfig: { _ in }
-            )
-        )
-        .environment(\.ditherConfig, DitherConfig(
-            imagingFocalLength: 382,
-            imagingPixelSize: 3.76,
-            guidingFocalLength: 200,
-            guidingPixelSize: 2.99,
-            scale: 1,
-            maxPixelShift: 10,
-            name: "Starfront Rig",
-            recordID: CKRecord.ID(recordName: UUID().uuidString)
-        ))
-    }
-}
-
-#Preview("Unavailable") {
-    NavigationStack {
-        DitherConfigDetailsView(
-            viewModel: DitherConfigDetailsViewModel(
-                cloudService: MockCloudSyncService(
-                    accountStatus: .success(.available),
-                    delete: .success(CKRecord.ID(recordName: UUID().uuidString))
+                config: DitherConfig(
+                    imagingFocalLength: 382,
+                    imagingPixelSize: 3.76,
+                    guidingFocalLength: 200,
+                    guidingPixelSize: 2.99,
+                    scale: 1,
+                    maxPixelShift: 10,
+                    name: "Starfront Rig",
+                    recordID: CKRecord.ID(recordName: UUID().uuidString)
                 ),
-                didDeleteConfig: { _ in }
+                didDeleteConfig: { _ in },
+                didEditConfig: { _ in }
             )
         )
     }

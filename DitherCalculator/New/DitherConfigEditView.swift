@@ -12,7 +12,7 @@ import SwiftUI
 @MainActor @Observable
 public final class DitherConfigEditViewModel {
     private let syncService: any CloudSyncService
-    public var config: DitherConfig?
+    public var config: DitherConfig
     public var name = ""
     public var imagingFocalLength: Double?
     public var imagingPixelSize: Double?
@@ -21,38 +21,40 @@ public final class DitherConfigEditViewModel {
     public var scale: Double?
     public var maxPixelShift: Int?
     public var selectedComponent: CalculationComponent?
-    public var isLoading = false
+    public var isSaving = false
     public var shouldDismiss = false
+    public let didEditConfig: (DitherConfig) -> Void
 
     public var disableSaveButton: Bool {
-        name.trimmingCharacters(in: .whitespacesAndNewlines) == config?.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        && imagingFocalLength == config?.imagingFocalLength
-        && imagingPixelSize == config?.imagingPixelSize
-        && guidingFocalLength == config?.guidingFocalLength
-        && guidingPixelSize == config?.guidingPixelSize
-        && scale == config?.scale
-        && maxPixelShift == config?.maxPixelShift
+        name.trimmingCharacters(in: .whitespacesAndNewlines) == config.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        && imagingFocalLength == config.imagingFocalLength
+        && imagingPixelSize == config.imagingPixelSize
+        && guidingFocalLength == config.guidingFocalLength
+        && guidingPixelSize == config.guidingPixelSize
+        && scale == config.scale
+        && maxPixelShift == config.maxPixelShift
     }
 
-    public init(syncService: any CloudSyncService) {
+    public init(
+        syncService: any CloudSyncService,
+        config: DitherConfig,
+        didEditConfig: @escaping (DitherConfig) -> Void
+    ) {
         self.syncService = syncService
-    }
-
-    public func onAppear(with config: DitherConfig?) {
         self.config = config
-        name = config?.name ?? ""
-        imagingFocalLength = config?.imagingFocalLength
-        imagingPixelSize = config?.imagingPixelSize
-        guidingFocalLength = config?.guidingFocalLength
-        guidingPixelSize = config?.guidingPixelSize
-        scale = config?.scale
-        maxPixelShift = config?.maxPixelShift
+        self.didEditConfig = didEditConfig
+        name = config.name
+        imagingFocalLength = config.imagingFocalLength
+        imagingPixelSize = config.imagingPixelSize
+        guidingFocalLength = config.guidingFocalLength
+        guidingPixelSize = config.guidingPixelSize
+        scale = config.scale
+        maxPixelShift = config.maxPixelShift
     }
 
     public func tappedSaveButton() {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard
-            let config,
             !trimmedName.isEmpty,
             let imagingFocalLength,
             let imagingPixelSize,
@@ -61,7 +63,7 @@ public final class DitherConfigEditViewModel {
             let scale,
             let maxPixelShift
         else { return }
-        isLoading = true
+        isSaving = true
         Task {
             do {
                 let status = try await syncService.accountStatus()
@@ -82,6 +84,11 @@ public final class DitherConfigEditViewModel {
                     record[DitherConfig.Key.maxPixelShift.rawValue] = maxPixelShift
                     try await syncService.save(record)
                     await MainActor.run {
+                        guard let config = DitherConfig(from: record) else {
+                            print("Could not update config")
+                            return
+                        }
+                        didEditConfig(config)
                         shouldDismiss = true
                     }
                 case .restricted:
@@ -95,7 +102,7 @@ public final class DitherConfigEditViewModel {
                 }
             } catch {
                 await MainActor.run {
-                    isLoading = false
+                    isSaving = false
                     print(error)
                 }
                 return
@@ -105,7 +112,6 @@ public final class DitherConfigEditViewModel {
 }
 
 public struct DitherConfigEditView: View {
-    @Environment(\.ditherConfig) private var ditherConfig
     @Environment(\.dismiss) private var dismiss
     @Bindable private var viewModel: DitherConfigEditViewModel
 
@@ -114,102 +120,96 @@ public struct DitherConfigEditView: View {
     }
 
     public var body: some View {
-        VStack {
-            if viewModel.config != nil {
-                Form {
-                    Section {
-                        VStack(alignment: .leading) {
-                            TextField("Name", text: $viewModel.name)
-                        }
-                    }
-                    Section {
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .imagingFocalLength
-                            } label: {
-                                FocalLengthRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .imagingPixelSize
-                            } label: {
-                                PixelSizeRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                    } header: {
-                        ImagingSectionHeader()
-                    }
-                    Section {
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .guidingFocalLength
-                            } label: {
-                                FocalLengthRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .guidingPixelSize
-                            } label: {
-                                PixelSizeRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                    } header: {
-                        GuidingSectionHeader()
-                    }
-                    Section {
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .scale
-                            } label: {
-                                ScaleRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(1.formatted(), value: $viewModel.scale, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                        VStack(alignment: .leading) {
-                            Button {
-                                viewModel.selectedComponent = .pixelShift
-                            } label: {
-                                MaxPixelShiftRowHeader()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .buttonStyle(.plain)
-                            .maxShiftInPixelsAccessibilityLabel()
-                            .learnWhatThisIsAccessibilityHint()
-                            TextField(0.formatted(), value: $viewModel.maxPixelShift, format: .number)
-                        }
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                    } header: {
-                        ControlSectionHeader()
-                    }
+        Form {
+            Section {
+                VStack(alignment: .leading) {
+                    TextField("Name", text: $viewModel.name)
                 }
-            } else {
-                DitherConfigUnavailableView()
+            }
+            Section {
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .imagingFocalLength
+                    } label: {
+                        FocalLengthRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .imagingPixelSize
+                    } label: {
+                        PixelSizeRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+            } header: {
+                ImagingSectionHeader()
+            }
+            Section {
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .guidingFocalLength
+                    } label: {
+                        FocalLengthRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .guidingPixelSize
+                    } label: {
+                        PixelSizeRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+            } header: {
+                GuidingSectionHeader()
+            }
+            Section {
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .scale
+                    } label: {
+                        ScaleRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(1.formatted(), value: $viewModel.scale, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                VStack(alignment: .leading) {
+                    Button {
+                        viewModel.selectedComponent = .pixelShift
+                    } label: {
+                        MaxPixelShiftRowHeader()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .maxShiftInPixelsAccessibilityLabel()
+                    .learnWhatThisIsAccessibilityHint()
+                    TextField(0.formatted(), value: $viewModel.maxPixelShift, format: .number)
+                }
+                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+            } header: {
+                ControlSectionHeader()
             }
         }
         .navigationTitle("Edit")
@@ -219,8 +219,12 @@ public struct DitherConfigEditView: View {
                 CancelButton { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                SaveButton(action: viewModel.tappedSaveButton)
-                    .disabled(viewModel.disableSaveButton)
+                if viewModel.isSaving {
+                    ProgressView()
+                } else {
+                    SaveButton(action: viewModel.tappedSaveButton)
+                        .disabled(viewModel.disableSaveButton)
+                }
             }
         }
         .sheet(item: $viewModel.selectedComponent) { component in
@@ -232,13 +236,11 @@ public struct DitherConfigEditView: View {
         .onChange(of: viewModel.shouldDismiss, { _, newValue in
             if newValue { dismiss() }
         })
-        .onAppear {
-            viewModel.onAppear(with: ditherConfig)
-        }
+        .disabled(viewModel.isSaving)
     }
 }
 
-#Preview("Available") {
+#Preview {
     let cloudSyncService = MockCloudSyncService(
         accountStatus: .success(.available),
         recordForID: .success(DitherConfig(
@@ -253,23 +255,21 @@ public struct DitherConfigEditView: View {
         ).newCKRecord())
     )
     NavigationStack {
-        DitherConfigEditView(viewModel: DitherConfigEditViewModel(syncService: cloudSyncService))
-            .environment(\.ditherConfig, DitherConfig(
-                imagingFocalLength: 382,
-                imagingPixelSize: 3.76,
-                guidingFocalLength: 200,
-                guidingPixelSize: 2.99,
-                scale: 1,
-                maxPixelShift: 10,
-                name: "Starfront Rig",
-                recordID: CKRecord.ID(recordName: UUID().uuidString)
-            ))
-    }
-}
-
-#Preview("Unavailable") {
-    let cloudSyncService = MockCloudSyncService(accountStatus: .success(.available))
-    NavigationStack {
-        DitherConfigEditView(viewModel: DitherConfigEditViewModel(syncService: cloudSyncService))
+        DitherConfigEditView(
+            viewModel: DitherConfigEditViewModel(
+                syncService: cloudSyncService,
+                config: DitherConfig(
+                    imagingFocalLength: 382,
+                    imagingPixelSize: 3.76,
+                    guidingFocalLength: 200,
+                    guidingPixelSize: 2.99,
+                    scale: 1,
+                    maxPixelShift: 10,
+                    name: "Starfront Rig",
+                    recordID: CKRecord.ID(recordName: UUID().uuidString)
+                ),
+                didEditConfig: { _ in }
+            )
+        )
     }
 }
