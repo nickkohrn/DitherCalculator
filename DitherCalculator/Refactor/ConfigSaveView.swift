@@ -37,7 +37,11 @@ struct ConfigSaveView: View {
 
     var body: some View {
         Form {
-            LabeledContent("Focal Length", value: config.imagingFocalLength.formatted())
+            if let value = config.imagingFocalLength {
+                Text(value.formatted())
+            } else {
+                Text("--")
+            }
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

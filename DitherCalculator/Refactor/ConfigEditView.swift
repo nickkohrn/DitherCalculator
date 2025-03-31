@@ -11,10 +11,10 @@ import SwiftUI
 
 @MainActor @Observable
 final class ConfigEditViewModel {
-    var imagingFocalLength: Int
+    var imagingFocalLength: Int?
     var shouldDismiss = false
 
-    init(imagingFocalLength: Int = 0) {
+    init(imagingFocalLength: Int? = nil) {
         self.imagingFocalLength = imagingFocalLength
     }
 

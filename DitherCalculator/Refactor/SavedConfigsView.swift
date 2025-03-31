@@ -47,7 +47,11 @@ struct SavedConfigsView: View {
                     ConfigDetailsView()
                         .environment(config)
                 } label: {
-                    Text(config.imagingFocalLength.formatted())
+                    if let value = config.imagingFocalLength {
+                        Text(value.formatted())
+                    } else {
+                        Text("--")
+                    }
                 }
             }
         }

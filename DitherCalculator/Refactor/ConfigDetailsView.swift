@@ -24,7 +24,24 @@ struct ConfigDetailsView: View {
 
     var body: some View {
         List {
-            LabeledContent("Focal Length", value: config.imagingFocalLength.formatted())
+            Section {
+                LabeledContent("Focal Length") {
+                    if let value = config.imagingFocalLength {
+                        Text(value.formatted())
+                    } else {
+                        Text("--")
+                    }
+                }
+                LabeledContent("Pixel Size") {
+                    if let value = config.imagingPixelSize {
+                        Text(value.formatted())
+                    } else {
+                        Text("--")
+                    }
+                }
+            } header: {
+                ImagingSectionHeader()
+            }
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

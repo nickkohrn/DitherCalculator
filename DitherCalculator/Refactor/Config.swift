@@ -11,18 +11,25 @@ import Observation
 @Observable
 public final class Config {
     public enum Key: String {
-        case type = "Config"
+        case guidingFocalLength
         case imagingFocalLength
+        case imagingPixelSize
+        case type = "Config"
     }
 
-    public var imagingFocalLength: Int
+    public var guidingFocalLength: Int?
+    public var imagingFocalLength: Int?
+    public var imagingPixelSize: Double?
     public let recordID: CKRecord.ID
 
     public init(
-        imagingFocalLength: Int,
+        guidingFocalLength: Int?,
+        imagingFocalLength: Int?,
+        imagingPixelSize: Double?,
         recordID: CKRecord.ID
     ) {
         self.imagingFocalLength = imagingFocalLength
+        self.imagingPixelSize = imagingPixelSize
         self.recordID = recordID
     }
 }
@@ -33,19 +40,27 @@ extension Config: Identifiable {
 
 extension Config {
     public convenience init?(from record: CKRecord) {
-        guard let imagingFocalLength = record[Config.Key.imagingFocalLength.rawValue] as? Int else { return nil }
-        self.init(imagingFocalLength: imagingFocalLength, recordID: record.recordID)
+        self.init(
+            guidingFocalLength: record[Config.Key.guidingFocalLength.rawValue] as? Int,
+            imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Int,
+            imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
+            recordID: record.recordID
+        )
     }
 
     public func newCKRecord() -> CKRecord {
         let record = CKRecord(recordType: Config.Key.type.rawValue)
+        record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength
         record[Config.Key.imagingFocalLength.rawValue] = imagingFocalLength
+        record[Config.Key.imagingPixelSize.rawValue] = imagingPixelSize
         return record
     }
 }
 
 extension Config {
     func updateWithValues(from config: Config) {
+        guidingFocalLength = config.guidingFocalLength
         imagingFocalLength = config.imagingFocalLength
+        imagingPixelSize = config.imagingPixelSize
     }
 }
