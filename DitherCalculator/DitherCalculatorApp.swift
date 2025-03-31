@@ -136,7 +136,7 @@ public enum CalculationComponent: Int, Identifiable {
         case .guidingFocalLength: "Guiding Focal Length"
         case .guidingPixelSize: "Guiding Pixel Size"
         case .scale: "Scale"
-        case .pixelShift: "Pixel Shift"
+        case .pixelShift: "Max Pixel Shift"
         }
     }
 

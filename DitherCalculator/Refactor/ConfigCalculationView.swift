@@ -11,24 +11,53 @@ import SwiftUI
 
 @MainActor @Observable
 final class ConfigCalculationViewModel {
+    var configToSave: Config?
     var guidingFocalLength: Int?
+    var guidingPixelSize: Double?
     var imagingFocalLength: Int?
     var imagingPixelSize: Double?
-
-
-
-
-
-    var configToSave: Config?
-    var selectedComponent: CalculationComponent?
     var isShowingSavedConfigsView = false
+    var maxPixelShift: Int?
+    var scale: Double?
+    var selectedComponent: CalculationComponent?
+
+    var disableSave: Bool {
+        result() == nil
+    }
+
+    func result() -> Int? {
+        guard let guidingFocalLength,
+              let guidingPixelSize,
+              let imagingFocalLength,
+              let imagingPixelSize,
+              let maxPixelShift,
+              let scale else {
+            return nil
+        }
+        let parameters = DitherParameters(
+            imagingMetadata: EquipmentMetadata(
+                focalLength: Double(imagingFocalLength),
+                pixelSize: imagingPixelSize
+            ),
+            guidingMetadata: EquipmentMetadata(
+                focalLength: Double(guidingFocalLength),
+                pixelSize: guidingPixelSize
+            ),
+            desiredImagingShiftPixels: maxPixelShift,
+            scale: scale
+        )
+        return try? DitherCalculator.calculateDitherPixels(with: parameters)
+    }
 
     func tappedSaveButton() {
         configToSave = Config(
             guidingFocalLength: guidingFocalLength,
+            guidingPixelSize: guidingPixelSize,
             imagingFocalLength: imagingFocalLength,
             imagingPixelSize: imagingPixelSize,
-            recordID: CKRecord.ID(recordName: UUID().uuidString)
+            maxPixelShift: maxPixelShift,
+            recordID: CKRecord.ID(recordName: UUID().uuidString),
+            scale: scale
         )
     }
 
@@ -43,118 +72,39 @@ struct ConfigCalculationView: View {
     var body: some View {
         Form {
             Section {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Button {
-                            viewModel.selectedComponent = .imagingFocalLength
-                        } label: {
-                            FocalLengthRowHeader()
-                                .foregroundStyle(Color.accentColor)
-                        }
-                        .buttonStyle(.plain)
-                        .learnWhatThisIsAccessibilityHint()
-                        TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
-                    }
-                }
-                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                HStack {
-                    VStack(alignment: .leading) {
-                        Button {
-                            viewModel.selectedComponent = .imagingPixelSize
-                        } label: {
-                            PixelSizeRowHeader()
-                                .foregroundStyle(Color.accentColor)
-                        }
-                        .buttonStyle(.plain)
-                        .learnWhatThisIsAccessibilityHint()
-                        TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
-                    }
-                }
-                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                imagingFocalLengthRow
+                imagingPixelSizeRow
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Button {
-                            viewModel.selectedComponent = .guidingFocalLength
-                        } label: {
-                            FocalLengthRowHeader()
-                                .foregroundStyle(Color.accentColor)
-                        }
-                        .buttonStyle(.plain)
-                        .learnWhatThisIsAccessibilityHint()
-                        TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
-                    }
-                }
-                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-//                HStack {
-//                    VStack(alignment: .leading) {
-//                        Button {
-//                            viewModel.selectedComponent = .guidingPixelSize
-//                        } label: {
-//                            PixelSizeRowHeader()
-//                                .foregroundStyle(Color.accentColor)
-//                        }
-//                        .buttonStyle(.plain)
-//                        .learnWhatThisIsAccessibilityHint()
-//                        TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
-//                    }
-//                }
-//                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                guidingFocalLengthRow
+                guidingPixelSizeRow
             } header: {
                 GuidingSectionHeader()
             }
-//            Section {
-//                HStack {
-//                    VStack(alignment: .leading) {
-//                        Button {
-//                            viewModel.selectedComponent = .scale
-//                        } label: {
-//                            ScaleRowHeader()
-//                                .foregroundStyle(Color.accentColor)
-//                        }
-//                        .buttonStyle(.plain)
-//                        .learnWhatThisIsAccessibilityHint()
-//                        TextField(1.formatted(), value: $viewModel.scale, format: .number)
-//                    }
-//                }
-//                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-//                HStack {
-//                    VStack(alignment: .leading) {
-//                        Button {
-//                            viewModel.selectedComponent = .pixelShift
-//                        } label: {
-//                            MaxPixelShiftRowHeader()
-//                                .foregroundStyle(Color.accentColor)
-//                        }
-//                        .buttonStyle(.plain)
-//                        .maxShiftInPixelsAccessibilityLabel()
-//                        .learnWhatThisIsAccessibilityHint()
-//                        TextField(0.formatted(), value: $viewModel.maxPixelShift, format: .number)
-//                    }
-//                }
-//                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-//            } header: {
-//                ControlSectionHeader()
-//            }
-//            Section {
-//                LabeledContent("Result") {
-//                    if let result = viewModel.result() {
-//                        Text("^[\(result) pixel](inflect: true)")
-//                    } else {
-//                        Text("^[\(0) pixel](inflect: true)")
-//                    }
-//                }
-//            }
+            Section {
+                scaleRow
+                pixelShiftRow
+            } header: {
+                ControlSectionHeader()
+            }
+            Section {
+                ResultRow(result: viewModel.result())
+            }
         }
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                SaveButton(action: viewModel.tappedSaveButton)
+                Button(action: viewModel.tappedSaveButton) {
+                    Label("Save", systemImage: "folder.badge.plus")
+                }
+                .disabled(viewModel.disableSave)
             }
             ToolbarItem(placement: .navigation) {
-                Button("Saved", action: viewModel.tappedSavedConfigsButton)
+                Button(action: viewModel.tappedSavedConfigsButton) {
+                    Label("Saved Configs", systemImage: "folder")
+                }
             }
         }
         .sheet(item: $viewModel.configToSave) { config in
@@ -167,6 +117,79 @@ struct ConfigCalculationView: View {
             NavigationStack {
                 SavedConfigsView()
             }
+        }
+        .sheet(item: $viewModel.selectedComponent) { component in
+            NavigationStack {
+                ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: component))
+            }
+            .presentationDetents([.medium, .large])
+        }
+    }
+
+    private var imagingFocalLengthRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .imagingFocalLength
+            } label: {
+                FocalLengthRowHeader()
+            }
+            TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
+        }
+    }
+
+    private var imagingPixelSizeRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .imagingPixelSize
+            } label: {
+                PixelSizeRowHeader()
+            }
+            TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
+        }
+    }
+
+    private var guidingFocalLengthRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .guidingFocalLength
+            } label: {
+                FocalLengthRowHeader()
+            }
+            TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
+        }
+    }
+
+    private var guidingPixelSizeRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .guidingPixelSize
+            } label: {
+                PixelSizeRowHeader()
+            }
+            TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
+        }
+    }
+
+    private var scaleRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .scale
+            } label: {
+                ScaleRowHeader()
+            }
+            TextField(0.formatted(), value: $viewModel.scale, format: .number)
+        }
+    }
+
+    private var pixelShiftRow: some View {
+        VStack(alignment: .leading) {
+            LearnWhatThisIsFormRowButton {
+                viewModel.selectedComponent = .pixelShift
+            } label: {
+                MaxPixelShiftRowHeader()
+            }
+            .maxShiftInPixelsAccessibilityLabel()
+            TextField(0.formatted(), value: $viewModel.maxPixelShift, format: .number)
         }
     }
 }

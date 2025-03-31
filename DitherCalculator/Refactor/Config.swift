@@ -12,25 +12,38 @@ import Observation
 public final class Config {
     public enum Key: String {
         case guidingFocalLength
+        case guidingPixelSize
         case imagingFocalLength
         case imagingPixelSize
+        case maxPixelShift
+        case scale
         case type = "Config"
     }
 
     public var guidingFocalLength: Int?
+    public var guidingPixelSize: Double?
     public var imagingFocalLength: Int?
     public var imagingPixelSize: Double?
+    public var maxPixelShift: Int?
     public let recordID: CKRecord.ID
+    public var scale: Double?
 
     public init(
         guidingFocalLength: Int?,
+        guidingPixelSize: Double?,
         imagingFocalLength: Int?,
         imagingPixelSize: Double?,
-        recordID: CKRecord.ID
+        maxPixelShift: Int?,
+        recordID: CKRecord.ID,
+        scale: Double?
     ) {
+        self.guidingFocalLength = guidingFocalLength
+        self.guidingPixelSize = guidingPixelSize
         self.imagingFocalLength = imagingFocalLength
         self.imagingPixelSize = imagingPixelSize
+        self.maxPixelShift = maxPixelShift
         self.recordID = recordID
+        self.scale = scale
     }
 }
 
@@ -42,17 +55,23 @@ extension Config {
     public convenience init?(from record: CKRecord) {
         self.init(
             guidingFocalLength: record[Config.Key.guidingFocalLength.rawValue] as? Int,
+            guidingPixelSize: record[Config.Key.guidingPixelSize.rawValue] as? Double,
             imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Int,
             imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
-            recordID: record.recordID
+            maxPixelShift: record[Config.Key.maxPixelShift.rawValue] as? Int,
+            recordID: record.recordID,
+            scale: record[Config.Key.scale.rawValue] as? Double
         )
     }
 
     public func newCKRecord() -> CKRecord {
         let record = CKRecord(recordType: Config.Key.type.rawValue)
         record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength
+        record[Config.Key.guidingPixelSize.rawValue] = guidingPixelSize
         record[Config.Key.imagingFocalLength.rawValue] = imagingFocalLength
         record[Config.Key.imagingPixelSize.rawValue] = imagingPixelSize
+        record[Config.Key.maxPixelShift.rawValue] = maxPixelShift
+        record[Config.Key.scale.rawValue] = scale
         return record
     }
 }
@@ -60,7 +79,10 @@ extension Config {
 extension Config {
     func updateWithValues(from config: Config) {
         guidingFocalLength = config.guidingFocalLength
+        guidingPixelSize = config.guidingPixelSize
         imagingFocalLength = config.imagingFocalLength
         imagingPixelSize = config.imagingPixelSize
+        maxPixelShift = config.maxPixelShift
+        scale = config.scale
     }
 }

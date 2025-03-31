@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct MaxPixelShiftRowHeader: View {
     public var body: some View {
-        FormRowHeader(string: "Pixel Shift")
+        FormRowHeader(string: "Max Pixel Shift")
     }
 }
 
