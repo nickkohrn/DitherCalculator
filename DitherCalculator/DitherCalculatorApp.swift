@@ -12,7 +12,7 @@ struct DitherCalculatorApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                CalculationView(viewModel: CalculationViewModel())
+                ConfigCalculationView()
             }
         }
     }

@@ -108,7 +108,3 @@ extension DitherConfig {
         return record
     }
 }
-
-extension EnvironmentValues {
-    @Entry public var ditherConfig: DitherConfig?
-}
