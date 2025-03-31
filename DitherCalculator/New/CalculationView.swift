@@ -19,6 +19,7 @@ public final class CalculationViewModel {
     public var maxPixelShift: Int?
     public var selectedComponent: CalculationComponent?
     public var configToSave: DitherConfig?
+    public var isShowingSavedConfigs = false
 
     public var disableSave: Bool {
         result() == nil
@@ -50,7 +51,6 @@ public final class CalculationViewModel {
         return result
     }
 
-
     public func tappedSaveButton() {
         guard
             let imagingFocalLength,
@@ -71,6 +71,10 @@ public final class CalculationViewModel {
             recordID: CKRecord.ID(recordName: UUID().uuidString)
         )
         configToSave = config
+    }
+
+    public func tappedSavedConfigsButton() {
+        isShowingSavedConfigs = true
     }
 }
 
@@ -198,6 +202,13 @@ public struct CalculationView: View {
                 SaveButton { viewModel.tappedSaveButton() }
                     .disabled(viewModel.disableSave)
             }
+            ToolbarItem(placement: .navigation) {
+                Button(
+                    "Saved Configs",
+                    systemImage: "document.badge.gearshape",
+                    action: viewModel.tappedSavedConfigsButton
+                )
+            }
         }
         .sheet(item: $viewModel.configToSave) { config in
             NavigationStack {
@@ -208,6 +219,14 @@ public struct CalculationView: View {
                     )
                 )
             }
+        }
+        .sheet(isPresented: $viewModel.isShowingSavedConfigs) {
+            NavigationStack {
+                SavedDitherConfigurationsView(
+                    viewModel: SavedDitherConfigurationsViewModel(cloudService: cloudService)
+                )
+            }
+            .presentationDetents([.medium, .large])
         }
     }
 }

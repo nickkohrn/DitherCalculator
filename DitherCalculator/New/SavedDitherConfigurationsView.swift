@@ -12,7 +12,7 @@ import SwiftUI
 @MainActor
 @Observable
 public final class SavedDitherConfigurationsViewModel {
-    private let cloudService: any CloudSyncService
+    public let cloudService: any CloudSyncService
     public private(set) var configs = [DitherConfig]()
     public var isLoading = false
     public var selectedConfig: DitherConfig?
@@ -21,8 +21,16 @@ public final class SavedDitherConfigurationsViewModel {
         self.cloudService = cloudService
     }
 
-    public func task() async {
-        defer { isLoading = false }
+    public func didDeleteConfig(id: CKRecord.ID) {
+        configs.removeAll { config in
+            config.recordID == id
+        }
+        Task {
+            await fetchConfigs()
+        }
+    }
+
+    private func fetchConfigs() async {
         await MainActor.run {
             isLoading = true
         }
@@ -36,6 +44,7 @@ public final class SavedDitherConfigurationsViewModel {
                 let configs = try await cloudService.fetchDitherConfigs()
                 await MainActor.run {
                     self.configs = configs
+                    isLoading = false
                 }
             case .restricted:
                 print("CloudKit status: restricted")
@@ -49,6 +58,10 @@ public final class SavedDitherConfigurationsViewModel {
         } catch {
             print("Error:", error)
         }
+    }
+
+    public func task() async {
+        await fetchConfigs()
     }
 
     public func tappedConfiguration(_ config: DitherConfig) {
@@ -66,16 +79,20 @@ public struct SavedDitherConfigurationsView: View {
 
     public var body: some View {
         VStack {
-            if viewModel.configs.isEmpty {
-                DitherConfigUnavailableView()
+            if viewModel.isLoading {
+                ProgressView("Loading")
             } else {
-                List {
-                    Section {
-                        ForEach(viewModel.configs) { config in
-                            Button {
-                                viewModel.tappedConfiguration(config)
-                            } label: {
-                                SavedDitherConfigRowView(viewModel: SavedDitherConfigRowViewModel(config: config))
+                if viewModel.configs.isEmpty {
+                    DitherConfigsUnavailableView()
+                } else {
+                    List {
+                        Section {
+                            ForEach(viewModel.configs) { config in
+                                Button {
+                                    viewModel.tappedConfiguration(config)
+                                } label: {
+                                    SavedDitherConfigRowView(viewModel: SavedDitherConfigRowViewModel(config: config))
+                                }
                             }
                         }
                     }
@@ -86,7 +103,15 @@ public struct SavedDitherConfigurationsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $viewModel.selectedConfig) { config in
             NavigationStack {
-                DitherConfigDetailsView(viewModel: DitherConfigDetailsViewModel(config: config))
+                DitherConfigDetailsView(
+                    viewModel: DitherConfigDetailsViewModel(
+                        cloudService: viewModel.cloudService,
+                        config: config,
+                        didDeleteConfig: { recordID in
+                            viewModel.didDeleteConfig(id: recordID)
+                        }
+                    )
+                )
             }
         }
         .toolbar {

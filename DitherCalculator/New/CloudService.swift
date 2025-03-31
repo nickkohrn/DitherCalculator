@@ -10,6 +10,7 @@ import SwiftUI
 
 public protocol CloudSyncService {
     func accountStatus() async throws -> CKAccountStatus
+    func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID
     func fetchDitherConfigs() async throws -> [DitherConfig]
     func record(for recordID: CKRecord.ID) async throws -> CKRecord
     func save(_ record: CKRecord) async throws
@@ -22,6 +23,10 @@ extension EnvironmentValues {
 public struct CloudKitService: CloudSyncService {
     public func accountStatus() async throws -> CKAccountStatus {
         try await CKContainer.default().accountStatus()
+    }
+
+    public func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID {
+        try await CKContainer.default().privateCloudDatabase.deleteRecord(withID: recordID)
     }
 
     public func fetchDitherConfigs() async throws -> [DitherConfig] {
@@ -47,17 +52,20 @@ public struct CloudKitService: CloudSyncService {
 
 public struct MockCloudSyncService: CloudSyncService {
     public var accountStatus: Result<CKAccountStatus, Error>?
+    public var delete: Result<CKRecord.ID, Error>?
     public var recordForID: Result<CKRecord, Error>?
     public var save: Result<Void, Error>?
     public var fetchDitherConfigsResult: Result<[DitherConfig], Error>?
 
     public init(
         accountStatus: Result<CKAccountStatus, Error>? = nil,
+        delete: Result<CKRecord.ID, Error>? = nil,
         recordForID: Result<CKRecord, Error>? = nil,
         save: Result<Void, Error>? = nil,
         fetchDitherConfigsResult: Result<[DitherConfig], Error>? = nil
     ) {
         self.accountStatus = accountStatus
+        self.delete = delete
         self.recordForID = recordForID
         self.save = save
         self.fetchDitherConfigsResult = fetchDitherConfigsResult
@@ -70,6 +78,16 @@ public struct MockCloudSyncService: CloudSyncService {
             throw error
         case .success(let status):
             return status
+        }
+    }
+
+    public func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID {
+        guard let delete else { fatalError() }
+        switch delete {
+            case .failure(let error):
+            throw error
+        case .success(let id):
+            return id
         }
     }
 
