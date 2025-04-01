@@ -91,7 +91,7 @@ struct ConfigCalculationView: View {
                 ControlSectionHeader()
             }
             Section {
-                ResultRow(result: viewModel.result())
+                LabeledResultRow(result: viewModel.result())
             }
         }
         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }

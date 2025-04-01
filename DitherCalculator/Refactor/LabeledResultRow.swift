@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ResultRow: View {
+struct LabeledResultRow: View {
     let result: Int?
 
     var body: some View {
@@ -22,7 +22,7 @@ struct ResultRow: View {
 }
 
 #Preview {
-    ResultRow(result: nil)
-    ResultRow(result: 1)
-    ResultRow(result: 10)
+    LabeledResultRow(result: nil)
+    LabeledResultRow(result: 1)
+    LabeledResultRow(result: 10)
 }

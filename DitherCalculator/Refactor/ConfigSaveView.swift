@@ -77,28 +77,28 @@ struct ConfigSaveView: View {
     var body: some View {
         Form {
             Section {
-                nameRow
+                LabeledNameRow(name: config.name)
             }
             Section {
-                imagingFocalLengthRow
-                imagingPixelSizeRow
+                LabeledFocalLengthRow(value: config.imagingFocalLength)
+                LabeledPixelSizeRow(value: config.imagingPixelSize)
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                guidingFocalLengthRow
-                guidingPixelSizeRow
+                LabeledFocalLengthRow(value: config.guidingFocalLength)
+                LabeledPixelSizeRow(value: config.guidingPixelSize)
             } header: {
                 GuidingSectionHeader()
             }
             Section {
-                scaleRow
-                maxPixelShiftRow
+                LabeledScaleRow(value: config.scale)
+                LabeledMaxPixelShiftRow(value: config.maxPixelShift)
             } header: {
                 ControlSectionHeader()
             }
             Section {
-                ResultRow(result: viewModel.result(for: config))
+                LabeledResultRow(result: viewModel.result(for: config))
             }
         }
         .navigationTitle("Save")
@@ -120,76 +120,6 @@ struct ConfigSaveView: View {
             if newValue { dismiss() }
         }
         .disabled(viewModel.isSaving)
-    }
-
-    private var nameRow: some View {
-        TextField("Name", text: $viewModel.name)
-    }
-
-    @ViewBuilder
-    private var imagingFocalLengthRow: some View {
-        LabeledContent("Focal Length") {
-            if let value = config.imagingFocalLength {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var imagingPixelSizeRow: some View {
-        LabeledContent("Pixel Size") {
-            if let value = config.imagingPixelSize {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var guidingFocalLengthRow: some View {
-        LabeledContent("Focal Length") {
-            if let value = config.guidingFocalLength {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var guidingPixelSizeRow: some View {
-        LabeledContent("Pixel Size") {
-            if let value = config.guidingPixelSize {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var scaleRow: some View {
-        LabeledContent("Scale") {
-            if let value = config.scale {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var maxPixelShiftRow: some View {
-        LabeledContent("Max Pixel Shift") {
-            if let value = config.maxPixelShift {
-                Text(value.formatted())
-            } else {
-                MissingValuePlaceholder()
-            }
-        }
     }
 }
 
