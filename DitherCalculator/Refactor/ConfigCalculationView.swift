@@ -97,13 +97,13 @@ struct ConfigCalculationView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: viewModel.tappedSaveButton) {
-                    Label("Save", systemImage: "folder.badge.plus")
+                    Label("Save", systemImage: "plus.circle")
                 }
                 .disabled(viewModel.disableSave)
             }
             ToolbarItem(placement: .navigation) {
                 Button(action: viewModel.tappedSavedConfigsButton) {
-                    Label("Saved Configs", systemImage: "folder")
+                    Label("Saved Configs", systemImage: "tray.full")
                 }
             }
         }

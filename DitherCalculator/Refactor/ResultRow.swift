@@ -15,7 +15,7 @@ struct ResultRow: View {
             if let result {
                 Text("^[\(result) pixel](inflect: true)")
             } else {
-                Text("^[\(0) pixel](inflect: true)")
+                MissingValuePlaceholder()
             }
         }
     }
