@@ -93,7 +93,7 @@ public struct SavedDitherConfigurationsView: View {
                 ProgressView("Loading")
             } else {
                 if viewModel.configs.isEmpty {
-                    DitherConfigsUnavailableView()
+                    EmptyConfigsView()
                 } else {
                     List {
                         Section {

@@ -51,6 +51,7 @@ final class ConfigSaveViewModel {
 
     func tappedSaveButton(for config: Config) {
         isSaving = true
+        config.name = trimmedName.isEmpty ? nil : trimmedName
         let record = config.newCKRecord()
         Task {
             do {
@@ -100,6 +101,8 @@ struct ConfigSaveView: View {
                 ResultRow(result: viewModel.result(for: config))
             }
         }
+        .navigationTitle("Save")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 CancelButton { dismiss() }
@@ -109,6 +112,7 @@ struct ConfigSaveView: View {
                     ProgressView()
                 } else {
                     Button("Save") { viewModel.tappedSaveButton(for: config) }
+                        .disabled(viewModel.disableSave)
                 }
             }
         }
@@ -199,6 +203,7 @@ struct ConfigSaveView: View {
                     imagingFocalLength: 382,
                     imagingPixelSize: 3.76,
                     maxPixelShift: 10,
+                    name: "Starfront Rig",
                     recordID: CKRecord.ID(recordName: UUID().uuidString),
                     scale: 1
                 )

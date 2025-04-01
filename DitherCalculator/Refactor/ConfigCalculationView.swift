@@ -56,6 +56,7 @@ final class ConfigCalculationViewModel {
             imagingFocalLength: imagingFocalLength,
             imagingPixelSize: imagingPixelSize,
             maxPixelShift: maxPixelShift,
+            name: "",
             recordID: CKRecord.ID(recordName: UUID().uuidString),
             scale: scale
         )
@@ -97,7 +98,7 @@ struct ConfigCalculationView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: viewModel.tappedSaveButton) {
-                    Label("Save", systemImage: "plus.circle")
+                    Label("Save to iCloud", systemImage: "icloud.and.arrow.up")
                 }
                 .disabled(viewModel.disableSave)
             }
@@ -117,6 +118,7 @@ struct ConfigCalculationView: View {
             NavigationStack {
                 SavedConfigsView()
             }
+            .presentationDetents([.medium, .large])
         }
         .sheet(item: $viewModel.selectedComponent) { component in
             NavigationStack {
