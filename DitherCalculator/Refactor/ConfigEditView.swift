@@ -11,23 +11,93 @@ import SwiftUI
 
 @MainActor @Observable
 final class ConfigEditViewModel {
+    private var existingConfig: Config?
+    var guidingFocalLength: Int?
+    var guidingPixelSize: Double?
     var imagingFocalLength: Int?
+    var imagingPixelSize: Double?
+    var isSaving = false
+    var maxPixelShift: Int?
+    var name = ""
+    var scale: Double?
+    var selectedComponent: CalculationComponent?
     var shouldDismiss = false
 
-    init(imagingFocalLength: Int? = nil) {
-        self.imagingFocalLength = imagingFocalLength
+    var disableSave: Bool {
+        guard let existingConfig,
+              let guidingFocalLength,
+              let guidingPixelSize,
+              let imagingFocalLength,
+              let imagingPixelSize,
+              let maxPixelShift,
+              let scale else {
+            return true
+        }
+        return guidingFocalLength == existingConfig.guidingFocalLength
+        && guidingPixelSize == existingConfig.guidingPixelSize
+        && imagingFocalLength == existingConfig.imagingFocalLength
+        && imagingPixelSize == existingConfig.imagingPixelSize
+        && maxPixelShift == existingConfig.maxPixelShift
+        && scale == existingConfig.scale
+        && (trimmedName.isEmpty || trimmedName == existingConfig.name?.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
+    var trimmedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    init() {}
+
     func onAppear(with config: Config) {
+        _existingConfig = config
+        guidingFocalLength = config.guidingFocalLength
+        guidingPixelSize = config.guidingPixelSize
         imagingFocalLength = config.imagingFocalLength
+        imagingPixelSize = config.imagingPixelSize
+        maxPixelShift = config.maxPixelShift
+        name = config.name ?? ""
+        scale = config.scale
+    }
+
+    public func result() -> Int? {
+        guard
+            let imagingFocalLength,
+            let imagingPixelSize,
+            let guidingFocalLength,
+            let guidingPixelSize,
+            let scale,
+            let maxPixelShift
+        else { return nil }
+        let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
+            imagingMetadata: EquipmentMetadata(
+                focalLength: Double(imagingFocalLength),
+                pixelSize: imagingPixelSize
+            ),
+            guidingMetadata: EquipmentMetadata(
+                focalLength: Double(guidingFocalLength),
+                pixelSize: guidingPixelSize
+            ),
+            desiredImagingShiftPixels: maxPixelShift,
+            scale: scale
+        ))
+        return result
     }
 
     func tappedSaveButton(for config: Config, onSuccess: @escaping (Config) -> Void) {
         Task {
+            await MainActor.run {
+                isSaving = true
+            }
             do {
                 let record = try await CKContainer.default().privateCloudDatabase.record(for: config.recordID)
                 guard record.recordType == Config.Key.type.rawValue else { return }
+                record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength
+                record[Config.Key.guidingPixelSize.rawValue] = guidingPixelSize
                 record[Config.Key.imagingFocalLength.rawValue] = imagingFocalLength
+                record[Config.Key.imagingPixelSize.rawValue] = imagingPixelSize
+                record[Config.Key.maxPixelShift.rawValue] = maxPixelShift
+                record[Config.Key.name.rawValue] = trimmedName
+                record[Config.Key.scale.rawValue] = scale
                 try await CKContainer.default().privateCloudDatabase.save(record)
                 await MainActor.run {
                     guard let config = Config(from: record) else {
@@ -38,7 +108,10 @@ final class ConfigEditViewModel {
                     shouldDismiss = true
                 }
             } catch {
-                print(error)
+                await MainActor.run {
+                    isSaving = false
+                    print(error)
+                }
             }
         }
     }
@@ -51,15 +124,73 @@ struct ConfigEditView: View {
 
     var body: some View {
         Form {
-            TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
+            Section {
+                NameFormRow(value: $viewModel.name)
+            }
+            Section {
+                FocalLengthFormRow(
+                    value: $viewModel.imagingFocalLength,
+                    onHeaderTap: { viewModel.selectedComponent = .imagingFocalLength }
+                )
+                PixelSizeFormRow(
+                    value: $viewModel.imagingPixelSize,
+                    onHeaderTap: { viewModel.selectedComponent = .imagingPixelSize }
+                )
+            } header: {
+                ImagingSectionHeader()
+            }
+            Section {
+                FocalLengthFormRow(
+                    value: $viewModel.guidingFocalLength,
+                    onHeaderTap: { viewModel.selectedComponent = .guidingFocalLength }
+                )
+                PixelSizeFormRow(
+                    value: $viewModel.guidingPixelSize,
+                    onHeaderTap: { viewModel.selectedComponent = .guidingPixelSize }
+                )
+            } header: {
+                GuidingSectionHeader()
+            }
+            Section {
+                ScaleFormRow(
+                    value: $viewModel.scale,
+                    onHeaderTap: { viewModel.selectedComponent = .scale }
+                )
+                MaxPixelShiftFormRow(
+                    value: $viewModel.maxPixelShift,
+                    onHeaderTap: { viewModel.selectedComponent = .pixelShift }
+                )
+            } header: {
+                ControlSectionHeader()
+            }
+            Section {
+                LabeledResultRow(result: viewModel.result())
+            }
+        }
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .navigationTitle("Edit")
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $viewModel.selectedComponent) { component in
+            NavigationStack {
+                ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: component))
+            }
+            .presentationDetents([.medium, .large])
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    viewModel.tappedSaveButton(for: config) { updatedConfig in
-                        config.updateWithValues(from: updatedConfig)
+                if viewModel.isSaving {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        viewModel.tappedSaveButton(for: config) { updatedConfig in
+                            config.updateWithValues(from: updatedConfig)
+                        }
                     }
+                    .disabled(viewModel.disableSave)
                 }
+            }
+            ToolbarItem(placement: .cancellationAction) {
+                CancelButton { dismiss() }
             }
         }
         .onAppear { viewModel.onAppear(with: config) }
@@ -68,9 +199,24 @@ struct ConfigEditView: View {
                 dismiss()
             }
         }
+        .disabled(viewModel.isSaving)
     }
 }
 
 #Preview {
-    ConfigEditView()
+    NavigationStack {
+        ConfigEditView()
+            .environment(
+                Config(
+                    guidingFocalLength: 200,
+                    guidingPixelSize: 2.99,
+                    imagingFocalLength: 382,
+                    imagingPixelSize: 3.76,
+                    maxPixelShift: 10,
+                    name: "Starfront Rig",
+                    recordID: CKRecord.ID(recordName: UUID().uuidString),
+                    scale: 1
+                )
+            )
+    }
 }

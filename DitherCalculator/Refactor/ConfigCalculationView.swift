@@ -73,20 +73,38 @@ struct ConfigCalculationView: View {
     var body: some View {
         Form {
             Section {
-                imagingFocalLengthRow
-                imagingPixelSizeRow
+                FocalLengthFormRow(
+                    value: $viewModel.imagingFocalLength,
+                    onHeaderTap: { viewModel.selectedComponent = .imagingFocalLength }
+                )
+                PixelSizeFormRow(
+                    value: $viewModel.imagingPixelSize,
+                    onHeaderTap: { viewModel.selectedComponent = .imagingPixelSize }
+                )
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                guidingFocalLengthRow
-                guidingPixelSizeRow
+                FocalLengthFormRow(
+                    value: $viewModel.guidingFocalLength,
+                    onHeaderTap: { viewModel.selectedComponent = .guidingFocalLength }
+                )
+                PixelSizeFormRow(
+                    value: $viewModel.guidingPixelSize,
+                    onHeaderTap: { viewModel.selectedComponent = .guidingPixelSize }
+                )
             } header: {
                 GuidingSectionHeader()
             }
             Section {
-                scaleRow
-                pixelShiftRow
+                ScaleFormRow(
+                    value: $viewModel.scale,
+                    onHeaderTap: { viewModel.selectedComponent = .scale }
+                )
+                MaxPixelShiftFormRow(
+                    value: $viewModel.maxPixelShift,
+                    onHeaderTap: { viewModel.selectedComponent = .pixelShift }
+                )
             } header: {
                 ControlSectionHeader()
             }
@@ -125,73 +143,6 @@ struct ConfigCalculationView: View {
                 ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: component))
             }
             .presentationDetents([.medium, .large])
-        }
-    }
-
-    private var imagingFocalLengthRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .imagingFocalLength
-            } label: {
-                FocalLengthRowHeader()
-            }
-            TextField(0.formatted(), value: $viewModel.imagingFocalLength, format: .number)
-        }
-    }
-
-    private var imagingPixelSizeRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .imagingPixelSize
-            } label: {
-                PixelSizeRowHeader()
-            }
-            TextField(0.formatted(), value: $viewModel.imagingPixelSize, format: .number)
-        }
-    }
-
-    private var guidingFocalLengthRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .guidingFocalLength
-            } label: {
-                FocalLengthRowHeader()
-            }
-            TextField(0.formatted(), value: $viewModel.guidingFocalLength, format: .number)
-        }
-    }
-
-    private var guidingPixelSizeRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .guidingPixelSize
-            } label: {
-                PixelSizeRowHeader()
-            }
-            TextField(0.formatted(), value: $viewModel.guidingPixelSize, format: .number)
-        }
-    }
-
-    private var scaleRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .scale
-            } label: {
-                ScaleRowHeader()
-            }
-            TextField(0.formatted(), value: $viewModel.scale, format: .number)
-        }
-    }
-
-    private var pixelShiftRow: some View {
-        VStack(alignment: .leading) {
-            LearnWhatThisIsFormRowButton {
-                viewModel.selectedComponent = .pixelShift
-            } label: {
-                MaxPixelShiftRowHeader()
-            }
-            .maxShiftInPixelsAccessibilityLabel()
-            TextField(0.formatted(), value: $viewModel.maxPixelShift, format: .number)
         }
     }
 }

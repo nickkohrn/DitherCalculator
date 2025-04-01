@@ -77,7 +77,7 @@ struct ConfigSaveView: View {
     var body: some View {
         Form {
             Section {
-                LabeledNameRow(name: config.name)
+                NameFormRow(value: $viewModel.name)
             }
             Section {
                 LabeledFocalLengthRow(value: config.imagingFocalLength)
