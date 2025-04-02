@@ -199,7 +199,25 @@ struct ConfigEditView: View {
                 dismiss()
             }
         }
+        .onChange(of: viewModel.result()) { oldValue, newValue in
+            guard oldValue != newValue else { return }
+            announce(result: newValue)
+        }
         .disabled(viewModel.isSaving)
+    }
+
+    private func announce(result: DitherResult?) {
+        let string: LocalizedStringResource
+        if let result {
+            string = "Result: \(result.formatted(.pixels))"
+        } else {
+            // This should occur only when transitioning from a valid result to `nil` rather than
+            // whenever a calculation component's value is modified.
+            string = "No result; form incomplete"
+        }
+        var announcement = AttributedString(localized: string)
+        announcement.accessibilitySpeechAnnouncementPriority = .low
+        AccessibilityNotification.Announcement(announcement).post()
     }
 }
 
