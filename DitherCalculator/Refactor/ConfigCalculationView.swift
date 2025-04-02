@@ -9,7 +9,6 @@ import CloudKit
 import Observation
 import SwiftUI
 
-#warning("Dismiss keyboard in drag")
 @MainActor @Observable
 final class ConfigCalculationViewModel {
     var configToSave: Config?
@@ -26,7 +25,7 @@ final class ConfigCalculationViewModel {
         result() == nil
     }
 
-    func result() -> Int? {
+    func result() -> DitherResult? {
         guard let guidingFocalLength,
               let guidingPixelSize,
               let imagingFocalLength,

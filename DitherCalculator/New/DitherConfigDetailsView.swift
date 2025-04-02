@@ -38,7 +38,7 @@ public final class DitherConfigDetailsViewModel {
         didEditConfig(config)
     }
 
-    public func result() -> Int {
+    public func result() -> DitherResult? {
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: config.imagingFocalLength,
@@ -51,7 +51,7 @@ public final class DitherConfigDetailsViewModel {
             desiredImagingShiftPixels: config.maxPixelShift,
             scale: config.scale
         ))
-        return result ?? 0
+        return result
     }
 
     public func tappedDeleteButton() {
@@ -118,7 +118,7 @@ public struct DitherConfigDetailsView: View {
             }
             Section {
                 LabeledContent("Result") {
-                    Text("^[\(viewModel.result()) pixel](inflect: true)")
+                    DitherResultText(result: viewModel.result())
                 }
             }
         }

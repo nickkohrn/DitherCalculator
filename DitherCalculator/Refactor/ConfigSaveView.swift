@@ -23,7 +23,7 @@ final class ConfigSaveViewModel {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    public func result(for config: Config) -> Int? {
+    public func result(for config: Config) -> DitherResult? {
         guard
             let imagingFocalLength = config.imagingFocalLength,
             let imagingPixelSize = config.imagingPixelSize,

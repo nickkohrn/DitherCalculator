@@ -21,7 +21,7 @@ final class ConfigDetailsViewModel {
         self.didDeleteConfig = didDeleteConfig
     }
 
-    public func result(for config: Config) -> Int? {
+    public func result(for config: Config) -> DitherResult? {
         guard
             let imagingFocalLength = config.imagingFocalLength,
             let imagingPixelSize = config.imagingPixelSize,

@@ -18,10 +18,6 @@ struct DitherCalculatorApp: App {
     }
 }
 
-//extension EnvironmentValues {
-//    @Entry public var cloudKitService = CloudKitService()
-//}
-
 struct EquipmentMetadata: Equatable {
     let focalLength: Measurement<UnitLength>
     let pixelSize: Measurement<UnitLength>
@@ -77,7 +73,7 @@ struct DitherCalculator {
     /// - Parameter ditherParameters: A `DitherParameters` struct containing all the necessary values.
     /// - Throws: A `CalculationError` if any parameter is invalid.
     /// - Returns: The recommended number of guide camera pixels to use for dithering.
-    static func calculateDitherPixels(with ditherParameters: DitherParameters) throws -> Int {
+    static func calculateDitherPixels(with ditherParameters: DitherParameters) throws -> DitherResult {
         // List parameters for validation.
         let parameters: [(name: String, value: Double)] = [
             ("Imaging focal length", ditherParameters.imagingMetadata.focalLength.value),
@@ -115,7 +111,7 @@ struct DitherCalculator {
         let adjustedGuidePixels = baseGuidePixels / ditherParameters.scale
 
         // Round up to ensure the shift meets or exceeds the desired value.
-        return Int(adjustedGuidePixels.rounded(.up))
+        return DitherResult(pixels: Int(adjustedGuidePixels.rounded(.up)))
     }
 }
 

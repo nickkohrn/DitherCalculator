@@ -27,7 +27,7 @@ public final class CalculationViewModel {
 
     public init() {}
 
-    public func result() -> Int? {
+    public func result() -> DitherResult? {
         guard
             let imagingFocalLength,
             let imagingPixelSize,

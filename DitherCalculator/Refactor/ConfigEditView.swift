@@ -59,7 +59,7 @@ final class ConfigEditViewModel {
         scale = config.scale
     }
 
-    public func result() -> Int? {
+    public func result() -> DitherResult? {
         guard
             let imagingFocalLength,
             let imagingPixelSize,

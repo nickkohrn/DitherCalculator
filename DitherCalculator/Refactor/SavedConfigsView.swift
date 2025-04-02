@@ -51,7 +51,7 @@ final class SavedConfigsViewModel {
         }
     }
 
-    public func result(for config: Config) -> Int? {
+    public func result(for config: Config) -> DitherResult? {
         guard
             let imagingFocalLength = config.imagingFocalLength,
             let imagingPixelSize = config.imagingPixelSize,
@@ -117,7 +117,7 @@ struct SavedConfigsView: View {
                             } label: {
                                 LabeledContent {
                                     if let result = viewModel.result(for: config) {
-                                        Text(result.formatted())
+                                        Text(result.formatted(.pixels))
                                     } else {
                                         MissingValuePlaceholder()
                                     }

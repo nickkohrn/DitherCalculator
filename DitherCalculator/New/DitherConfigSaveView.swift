@@ -22,10 +22,6 @@ public final class DitherConfigSaveViewModel {
         result() == nil || trimmedName.isEmpty
     }
 
-    public var formattedResult: LocalizedStringResource {
-        "^[\(result() ?? 0) pixel](inflect: true)"
-    }
-
     public var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     public init(config: DitherConfig, cloudSyncService: any CloudSyncService) {
@@ -34,7 +30,7 @@ public final class DitherConfigSaveViewModel {
         name = config.name
     }
 
-    public func result() -> Int? {
+    public func result() -> DitherResult? {
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: config.imagingFocalLength,
@@ -96,9 +92,7 @@ public struct DitherConfigSaveView: View {
                 ControlSectionHeader()
             }
             Section {
-                LabeledContent("Result") {
-                    Text(viewModel.formattedResult)
-                }
+                LabeledResultRow(result: viewModel.result())
             }
         }
         .navigationTitle("New Config")

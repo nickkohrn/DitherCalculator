@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct LabeledResultRow: View {
-    let result: Int?
+    let result: DitherResult?
 
     var body: some View {
         LabeledContent("Result") {
             if let result {
-                Text("^[\(result) pixel](inflect: true)")
+                DitherResultText(result: result)
             } else {
                 MissingValuePlaceholder()
             }
@@ -23,6 +23,6 @@ struct LabeledResultRow: View {
 
 #Preview {
     LabeledResultRow(result: nil)
-    LabeledResultRow(result: 1)
-    LabeledResultRow(result: 10)
+    LabeledResultRow(result: DitherResult(pixels: 1))
+    LabeledResultRow(result: DitherResult(pixels: 10))
 }

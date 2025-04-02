@@ -13,7 +13,7 @@ import SwiftUI
 public final class SavedDitherConfigRowViewModel {
     public let config: DitherConfig
 
-    public func result() -> Int {
+    public func result() -> DitherResult? {
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
                 focalLength: config.imagingFocalLength,
@@ -26,7 +26,7 @@ public final class SavedDitherConfigRowViewModel {
             desiredImagingShiftPixels: config.maxPixelShift,
             scale: config.scale
         ))
-        return result ?? 0
+        return result
     }
 
     public init(config: DitherConfig) {
@@ -43,7 +43,7 @@ public struct SavedDitherConfigRowView: View {
 
     public var body: some View {
         LabeledContent(viewModel.config.name) {
-            Text("^[\(viewModel.result()) pixel](inflect: true)")
+            DitherResultText(result: viewModel.result())
         }
     }
 }
