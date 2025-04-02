@@ -30,6 +30,26 @@ public final class Config {
     public let recordID: CKRecord.ID
     public var scale: Double?
 
+    public var guidingFocalLengthMeasurement: Measurement<UnitLength>? {
+        guard let guidingFocalLength else { return nil }
+        return Measurement(value: Double(guidingFocalLength), unit: .millimeters)
+    }
+
+    public var guidingPixelSizeMeasurement: Measurement<UnitLength>? {
+        guard let guidingPixelSize else { return nil }
+        return Measurement(value: guidingPixelSize, unit: .micrometers)
+    }
+
+    public var imagingFocalLengthMeasurement: Measurement<UnitLength>? {
+        guard let imagingFocalLength else { return nil }
+        return Measurement(value: Double(imagingFocalLength), unit: .millimeters)
+    }
+
+    public var imagingPixelSizeMeasurement: Measurement<UnitLength>? {
+        guard let imagingPixelSize else { return nil }
+        return Measurement(value: imagingPixelSize, unit: .micrometers)
+    }
+
     public init(
         guidingFocalLength: Int?,
         guidingPixelSize: Double?,
@@ -91,5 +111,13 @@ extension Config {
         maxPixelShift = config.maxPixelShift
         name = config.name
         scale = config.scale
+    }
+}
+
+extension Config {
+    public func formatted<Style: FormatStyle>(
+        _ style: Style
+    ) -> Style.FormatOutput where Style.FormatInput == Config {
+        style.format(self)
     }
 }

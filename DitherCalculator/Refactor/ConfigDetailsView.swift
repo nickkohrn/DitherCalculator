@@ -93,14 +93,14 @@ struct ConfigDetailsView: View {
                 LabeledNameRow(name: config.name)
             }
             Section {
-                LabeledFocalLengthRow(value: config.imagingFocalLength)
-                LabeledPixelSizeRow(value: config.imagingPixelSize)
+                LabeledFocalLengthRow(value: config.imagingFocalLengthMeasurement)
+                LabeledPixelSizeRow(value: config.imagingPixelSizeMeasurement)
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                LabeledFocalLengthRow(value: config.guidingFocalLength)
-                LabeledPixelSizeRow(value: config.guidingPixelSize)
+                LabeledFocalLengthRow(value: config.guidingFocalLengthMeasurement)
+                LabeledPixelSizeRow(value: config.guidingPixelSizeMeasurement)
             } header: {
                 GuidingSectionHeader()
             }

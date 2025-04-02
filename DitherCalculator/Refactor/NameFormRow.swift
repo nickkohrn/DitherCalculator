@@ -13,6 +13,7 @@ struct NameFormRow: View {
     var body: some View {
         TextField("Name", text: $value)
             .autocapitalization(.words)
+            .accessibilityLabel("Configuration Name")
     }
 }
 

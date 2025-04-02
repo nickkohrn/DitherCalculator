@@ -13,7 +13,7 @@ struct LabeledMaxPixelShiftRow: View {
     var body: some View {
         LabeledContent("Max Pixel Shift") {
             if let value {
-                Text(value.formatted())
+                Text("^[\(value) pixel](inflect: true)")
             } else {
                 MissingValuePlaceholder()
             }

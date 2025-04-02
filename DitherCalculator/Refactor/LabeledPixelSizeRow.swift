@@ -8,20 +8,32 @@
 import SwiftUI
 
 struct LabeledPixelSizeRow: View {
-    let value: Double?
+    let value: Measurement<UnitLength>?
 
     var body: some View {
         LabeledContent("Pixel Size") {
             if let value {
-                Text(value.formatted())
+                Text(formatted(value: value, width: .abbreviated))
+                    .accessibilityLabel(formatted(value: value, width: .wide))
             } else {
                 MissingValuePlaceholder()
             }
         }
     }
+
+    private func formatted(
+        value: Measurement<UnitLength>,
+        width: Measurement<UnitLength>.FormatStyle.UnitWidth
+    ) -> String {
+        value.formatted(.measurement(
+            width: width,
+            usage: .asProvided,
+            numberFormatStyle: .number.precision(.fractionLength(0...2)))
+        )
+    }
 }
 
 #Preview {
     LabeledPixelSizeRow(value: nil)
-    LabeledPixelSizeRow(value: 3.76)
+    LabeledPixelSizeRow(value: Measurement(value: 3.76, unit: .micrometers))
 }

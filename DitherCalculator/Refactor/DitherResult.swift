@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DitherResult {
+public struct DitherResult: Equatable {
     public let pixels: Int
 
     public init(pixels: Int) {
