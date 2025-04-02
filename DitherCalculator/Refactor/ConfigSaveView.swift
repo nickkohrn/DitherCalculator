@@ -34,12 +34,12 @@ final class ConfigSaveViewModel {
         else { return nil }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
-                focalLength: Double(imagingFocalLength),
-                pixelSize: imagingPixelSize
+                focalLength: imagingFocalLength.measurement.value,
+                pixelSize: imagingPixelSize.measurement.value
             ),
             guidingMetadata: EquipmentMetadata(
-                focalLength: Double(guidingFocalLength),
-                pixelSize: guidingPixelSize
+                focalLength: guidingFocalLength.measurement.value,
+                pixelSize: guidingPixelSize.measurement.value
             ),
             desiredImagingShiftPixels: maxPixelShift,
             scale: scale
@@ -80,14 +80,14 @@ struct ConfigSaveView: View {
                 NameFormRow(value: $viewModel.name)
             }
             Section {
-                LabeledFocalLengthRow(value: config.imagingFocalLengthMeasurement)
-                LabeledPixelSizeRow(value: config.imagingPixelSizeMeasurement)
+                LabeledFocalLengthRow(value: config.imagingFocalLength?.measurement)
+                LabeledPixelSizeRow(value: config.imagingPixelSize?.measurement)
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                LabeledFocalLengthRow(value: config.guidingFocalLengthMeasurement)
-                LabeledPixelSizeRow(value: config.guidingPixelSizeMeasurement)
+                LabeledFocalLengthRow(value: config.guidingFocalLength?.measurement)
+                LabeledPixelSizeRow(value: config.guidingPixelSize?.measurement)
             } header: {
                 GuidingSectionHeader()
             }

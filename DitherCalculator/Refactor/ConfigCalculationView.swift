@@ -12,9 +12,9 @@ import SwiftUI
 @MainActor @Observable
 final class ConfigCalculationViewModel {
     var configToSave: Config?
-    var guidingFocalLength: Int?
+    var guidingFocalLength: Double?
     var guidingPixelSize: Double?
-    var imagingFocalLength: Int?
+    var imagingFocalLength: Double?
     var imagingPixelSize: Double?
     var isShowingSavedConfigsView = false
     var maxPixelShift: Int?

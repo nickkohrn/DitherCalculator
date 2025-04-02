@@ -22,15 +22,75 @@ struct DitherCalculatorApp: App {
     }
 }
 
-struct EquipmentMetadata: Equatable {
-    let focalLength: Measurement<UnitLength>
-    let pixelSize: Measurement<UnitLength>
+public struct FocalLength: Equatable {
+    public typealias Unit = UnitLength
+    public static let unit: Self.Unit = .millimeters
+    public let measurement: Measurement<Self.Unit>
 
-    init(focalLength: Double, pixelSize: Double) {
-        self.focalLength = Measurement<UnitLength>(value: focalLength, unit: .millimeters)
-        self.pixelSize = Measurement<UnitLength>(value: pixelSize, unit: .micrometers)
+    public init(value: Double) {
+        measurement = Measurement(value: value, unit: Self.unit)
     }
 }
+
+public struct PixelSize: Equatable {
+    public typealias Unit = UnitLength
+    public static let unit: Self.Unit = .micrometers
+    public let measurement: Measurement<Self.Unit>
+
+    public init(value: Double) {
+        measurement = Measurement(value: value, unit: Self.unit)
+    }
+}
+
+struct EquipmentMetadata: Equatable {
+    let focalLength: FocalLength
+    let pixelSize: PixelSize
+
+    init(focalLength: Double, pixelSize: Double) {
+        self.focalLength = FocalLength(value: focalLength)
+        self.pixelSize = PixelSize(value: pixelSize)
+    }
+}
+
+#warning("Create new calculator to use a Config")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /// Encapsulates the parameters needed for the dither pixels calculation.
 struct DitherParameters: Equatable {
@@ -80,10 +140,10 @@ struct DitherCalculator {
     static func calculateDitherPixels(with ditherParameters: DitherParameters) throws -> DitherResult {
         // List parameters for validation.
         let parameters: [(name: String, value: Double)] = [
-            ("Imaging focal length", ditherParameters.imagingMetadata.focalLength.value),
-            ("Imaging pixel size", ditherParameters.imagingMetadata.pixelSize.value),
-            ("Guiding focal length", ditherParameters.guidingMetadata.focalLength.value),
-            ("Guiding pixel size", ditherParameters.guidingMetadata.pixelSize.value),
+            ("Imaging focal length", ditherParameters.imagingMetadata.focalLength.measurement.value),
+            ("Imaging pixel size", ditherParameters.imagingMetadata.pixelSize.measurement.value),
+            ("Guiding focal length", ditherParameters.guidingMetadata.focalLength.measurement.value),
+            ("Guiding pixel size", ditherParameters.guidingMetadata.pixelSize.measurement.value),
             ("Desired imaging pixel-shift", Double(ditherParameters.desiredImagingShiftPixels)),
             ("Scale", ditherParameters.scale)
         ]
@@ -102,8 +162,8 @@ struct DitherCalculator {
         }
 
         // Calculate imaging and guiding scales in arcsec per pixel.
-        let imagingScale = (arcsecondsPerRadian * ditherParameters.imagingMetadata.pixelSize.value) / ditherParameters.imagingMetadata.focalLength.value
-        let guidingScale = (arcsecondsPerRadian * ditherParameters.guidingMetadata.pixelSize.value) / ditherParameters.guidingMetadata.focalLength.value
+        let imagingScale = (arcsecondsPerRadian * ditherParameters.imagingMetadata.pixelSize.measurement.value) / ditherParameters.imagingMetadata.focalLength.measurement.value
+        let guidingScale = (arcsecondsPerRadian * ditherParameters.guidingMetadata.pixelSize.measurement.value) / ditherParameters.guidingMetadata.focalLength.measurement.value
 
         // Determine the desired angular shift (in arcseconds) for the imaging camera.
         let desiredArcsecShift = Double(ditherParameters.desiredImagingShiftPixels) * imagingScale
@@ -145,13 +205,13 @@ public enum CalculationComponent: Int, Identifiable {
         measurementFormatter.unitStyle = .long
         return switch self {
         case .imagingFocalLength:
-            "This is the focal length of your imaging equipment, in \(measurementFormatter.string(from: UnitLength.millimeters))."
+            "This is the focal length of your imaging equipment, in \(measurementFormatter.string(from: FocalLength.unit))."
         case .imagingPixelSize:
-            "This is size of your imaging camera's pixels, in \(measurementFormatter.string(from: UnitLength.micrometers))."
+            "This is size of your imaging camera's pixels, in \(measurementFormatter.string(from: PixelSize.unit))."
         case .guidingFocalLength:
-            "This is the focal length of your guiding equipment, in \(measurementFormatter.string(from: UnitLength.millimeters))."
+            "This is the focal length of your guiding equipment, in \(measurementFormatter.string(from: FocalLength.unit))."
         case .guidingPixelSize:
-            "This is size of your guiding camera's pixels, in \(measurementFormatter.string(from: UnitLength.micrometers))."
+            "This is size of your guiding camera's pixels, in \(measurementFormatter.string(from: PixelSize.unit))."
         case .scale:
             "This is a multiplier used to adjust the maximum-dither amount specified by your imaging software."
         case .pixelShift:

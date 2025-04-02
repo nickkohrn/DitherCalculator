@@ -9,8 +9,8 @@ import SwiftUI
 
 public struct FocalLengthRowHeader: View {
     public var body: some View {
-        FormRowHeader(string: "Focal Length", parenthesizedString: UnitLength.millimeters.symbol)
-            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: UnitLength.millimeters))")
+        FormRowHeader(string: "Focal Length", parenthesizedString: FocalLength.unit.symbol)
+            .accessibilityLabel("Focal length in \(MeasurementFormatter.longUnitFormatter.string(from: FocalLength.unit))")
     }
 }
 

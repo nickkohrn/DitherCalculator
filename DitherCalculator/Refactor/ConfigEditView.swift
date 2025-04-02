@@ -12,9 +12,9 @@ import SwiftUI
 @MainActor @Observable
 final class ConfigEditViewModel {
     private var existingConfig: Config?
-    var guidingFocalLength: Int?
+    var guidingFocalLength: Double?
     var guidingPixelSize: Double?
-    var imagingFocalLength: Int?
+    var imagingFocalLength: Double?
     var imagingPixelSize: Double?
     var isSaving = false
     var maxPixelShift: Int?
@@ -33,10 +33,10 @@ final class ConfigEditViewModel {
               let scale else {
             return true
         }
-        return guidingFocalLength == existingConfig.guidingFocalLength
-        && guidingPixelSize == existingConfig.guidingPixelSize
-        && imagingFocalLength == existingConfig.imagingFocalLength
-        && imagingPixelSize == existingConfig.imagingPixelSize
+        return guidingFocalLength == existingConfig.guidingFocalLength?.measurement.value
+        && guidingPixelSize == existingConfig.guidingPixelSize?.measurement.value
+        && imagingFocalLength == existingConfig.imagingFocalLength?.measurement.value
+        && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
         && maxPixelShift == existingConfig.maxPixelShift
         && scale == existingConfig.scale
         && (trimmedName.isEmpty || trimmedName == existingConfig.name?.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -50,10 +50,10 @@ final class ConfigEditViewModel {
 
     func onAppear(with config: Config) {
         _existingConfig = config
-        guidingFocalLength = config.guidingFocalLength
-        guidingPixelSize = config.guidingPixelSize
-        imagingFocalLength = config.imagingFocalLength
-        imagingPixelSize = config.imagingPixelSize
+        guidingFocalLength = config.guidingFocalLength?.measurement.value
+        guidingPixelSize = config.guidingPixelSize?.measurement.value
+        imagingFocalLength = config.imagingFocalLength?.measurement.value
+        imagingPixelSize = config.imagingPixelSize?.measurement.value
         maxPixelShift = config.maxPixelShift
         name = config.name ?? ""
         scale = config.scale

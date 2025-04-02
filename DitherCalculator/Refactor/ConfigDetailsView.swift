@@ -23,10 +23,10 @@ final class ConfigDetailsViewModel {
 
     public func result(for config: Config) -> DitherResult? {
         guard
-            let imagingFocalLength = config.imagingFocalLength,
-            let imagingPixelSize = config.imagingPixelSize,
-            let guidingFocalLength = config.guidingFocalLength,
-            let guidingPixelSize = config.guidingPixelSize,
+            let imagingFocalLength = config.imagingFocalLength?.measurement.value,
+            let imagingPixelSize = config.imagingPixelSize?.measurement.value,
+            let guidingFocalLength = config.guidingFocalLength?.measurement.value,
+            let guidingPixelSize = config.guidingPixelSize?.measurement.value,
             let scale = config.scale,
             let maxPixelShift = config.maxPixelShift
         else { return nil }
@@ -36,7 +36,7 @@ final class ConfigDetailsViewModel {
                 pixelSize: imagingPixelSize
             ),
             guidingMetadata: EquipmentMetadata(
-                focalLength: Double(guidingFocalLength),
+                focalLength: guidingFocalLength,
                 pixelSize: guidingPixelSize
             ),
             desiredImagingShiftPixels: maxPixelShift,
@@ -93,14 +93,14 @@ struct ConfigDetailsView: View {
                 LabeledNameRow(name: config.name)
             }
             Section {
-                LabeledFocalLengthRow(value: config.imagingFocalLengthMeasurement)
-                LabeledPixelSizeRow(value: config.imagingPixelSizeMeasurement)
+                LabeledFocalLengthRow(value: config.imagingFocalLength?.measurement)
+                LabeledPixelSizeRow(value: config.imagingPixelSize?.measurement)
             } header: {
                 ImagingSectionHeader()
             }
             Section {
-                LabeledFocalLengthRow(value: config.guidingFocalLengthMeasurement)
-                LabeledPixelSizeRow(value: config.guidingPixelSizeMeasurement)
+                LabeledFocalLengthRow(value: config.guidingFocalLength?.measurement)
+                LabeledPixelSizeRow(value: config.guidingPixelSize?.measurement)
             } header: {
                 GuidingSectionHeader()
             }
