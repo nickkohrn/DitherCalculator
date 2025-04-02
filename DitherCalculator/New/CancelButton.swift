@@ -15,7 +15,7 @@ public struct CancelButton: View {
     }
 
     public var body: some View {
-        Button("Cancel", action: action)
+        Button("Cancel", role: .cancel, action: action)
     }
 }
 

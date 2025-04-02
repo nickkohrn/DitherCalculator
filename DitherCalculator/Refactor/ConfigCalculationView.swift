@@ -9,6 +9,7 @@ import CloudKit
 import Observation
 import SwiftUI
 
+#warning("Dismiss keyboard in drag")
 @MainActor @Observable
 final class ConfigCalculationViewModel {
     var configToSave: Config?

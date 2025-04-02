@@ -11,7 +11,15 @@ import SwiftUI
 
 @MainActor @Observable
 final class ConfigDetailsViewModel {
+    public var isDeleting = false
+    public var isShowingDeleteConfirmationDialog = false
     public var isShowingEditView = false
+    private let didDeleteConfig: (Config) -> Void
+    var shouldDismiss = false
+
+    init(didDeleteConfig: @escaping (Config) -> Void) {
+        self.didDeleteConfig = didDeleteConfig
+    }
 
     public func result(for config: Config) -> Int? {
         guard
@@ -37,6 +45,34 @@ final class ConfigDetailsViewModel {
         return result
     }
 
+    func tappedDeleteButton() {
+        isShowingDeleteConfirmationDialog = true
+    }
+
+    func tappedDeleteConfirmationCancel() {
+        isDeleting = false
+        isShowingDeleteConfirmationDialog = false
+    }
+
+    func tappedDeleteConfirmationConfirm(for config: Config) {
+        isDeleting = true
+        isShowingDeleteConfirmationDialog = false
+        Task {
+            do {
+                try await CKContainer.default().privateCloudDatabase.deleteRecord(withID: config.recordID)
+                await MainActor.run {
+                    didDeleteConfig(config)
+                    shouldDismiss = true
+                }
+            } catch {
+                print(error)
+                await MainActor.run {
+                    isDeleting = true
+                }
+            }
+        }
+    }
+
     func tappedEditButton() {
         isShowingEditView = true
     }
@@ -44,7 +80,12 @@ final class ConfigDetailsViewModel {
 
 struct ConfigDetailsView: View {
     @Environment(Config.self) private var config
-    @State private var viewModel = ConfigDetailsViewModel()
+    @Environment(\.dismiss) private var dismiss
+    @State private var viewModel: ConfigDetailsViewModel
+
+    init(viewModel: ConfigDetailsViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     var body: some View {
         List {
@@ -76,21 +117,40 @@ struct ConfigDetailsView: View {
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                DeleteButton { viewModel.tappedDeleteButton() }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button("Edit", action: viewModel.tappedEditButton)
             }
         }
+        .confirmationDialog(
+            "Delete Config",
+            isPresented: $viewModel.isShowingDeleteConfirmationDialog,
+            titleVisibility: .visible,
+            actions: {
+                CancelButton { viewModel.tappedDeleteConfirmationCancel() }
+                DeleteButton { viewModel.tappedDeleteConfirmationConfirm(for: config) }
+            },
+            message: {
+                Text("Are you sure you want to delete this config? This cannot be undone.")
+            }
+        )
         .sheet(isPresented: $viewModel.isShowingEditView) {
             NavigationStack {
                 ConfigEditView()
                     .environment(config)
             }
         }
+        .onChange(of: viewModel.shouldDismiss) { _, newValue in
+            if newValue { dismiss() }
+        }
+        .disabled(viewModel.isDeleting)
     }
 }
 
 #Preview {
-    ConfigDetailsView()
+    ConfigDetailsView(viewModel: ConfigDetailsViewModel(didDeleteConfig: {_ in }))
         .environment(
             Config(
                 guidingFocalLength: 200,

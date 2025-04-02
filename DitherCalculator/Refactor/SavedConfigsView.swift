@@ -18,6 +18,12 @@ final class SavedConfigsViewModel {
 
     init() {}
 
+    func didDeleteConfig(_ config: Config) {
+        configs.removeAll { existing in
+            existing.recordID == config.recordID
+        }
+    }
+
     private func fetchConfigs() async {
         await MainActor.run {
             isLoading = true
@@ -100,8 +106,14 @@ struct SavedConfigsView: View {
                     List {
                         ForEach(viewModel.configs) { config in
                             NavigationLink {
-                                ConfigDetailsView()
-                                    .environment(config)
+                                ConfigDetailsView(
+                                    viewModel: ConfigDetailsViewModel(
+                                        didDeleteConfig: { config in
+                                            viewModel.didDeleteConfig(config)
+                                        }
+                                    )
+                                )
+                                .environment(config)
                             } label: {
                                 LabeledContent {
                                     if let result = viewModel.result(for: config) {
