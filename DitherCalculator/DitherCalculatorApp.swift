@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+// TODO: Handle errors
+// TODO: Handle iCloud statues
+// TODO: Modularize components into package modules
+
 @main
 struct DitherCalculatorApp: App {
     var body: some Scene {

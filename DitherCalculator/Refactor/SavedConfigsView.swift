@@ -147,11 +147,28 @@ struct SavedConfigsView: View {
                         ProgressView()
                     } else {
                         Label("Refresh", systemImage: "arrow.clockwise.circle")
+                            .accessibilityHint("Fetches your latest collection of configurations from iCloud")
                     }
                 }
                 .disabled(viewModel.isLoading)
             }
         }
+        .onChange(of: viewModel.isLoading) { oldValue, newValue in
+            guard oldValue != newValue else { return }
+            announce(isLoading: newValue)
+        }
+    }
+
+    private func announce(isLoading: Bool) {
+        let string: LocalizedStringResource
+        if isLoading {
+            string = "Fetching configurations"
+        } else {
+            string = "Configurations fetched"
+        }
+        var announcement = AttributedString(localized: string)
+        announcement.accessibilitySpeechAnnouncementPriority = .high
+        AccessibilityNotification.Announcement(announcement).post()
     }
 }
 
