@@ -90,7 +90,7 @@ extension Config {
     }
 
     public func newCKRecord() -> CKRecord {
-        let record = CKRecord(recordType: Config.Key.type.rawValue)
+        let record = CKRecord(recordType: Config.Key.type.rawValue, recordID: recordID)
         record[Config.Key.guidingFocalLength.rawValue] = _guidingFocalLength
         record[Config.Key.guidingPixelSize.rawValue] = _guidingPixelSize
         record[Config.Key.imagingFocalLength.rawValue] = _imagingFocalLength
@@ -103,7 +103,7 @@ extension Config {
 }
 
 extension Config {
-    func updateWithValues(from config: Config) {
+    public func updateWithValues(from config: Config) {
         _guidingFocalLength = config._guidingFocalLength
         _guidingPixelSize = config._guidingPixelSize
         _imagingFocalLength = config._imagingFocalLength
@@ -111,13 +111,5 @@ extension Config {
         maxPixelShift = config.maxPixelShift
         name = config.name
         scale = config.scale
-    }
-}
-
-extension Config {
-    public func formatted<Style: FormatStyle>(
-        _ style: Style
-    ) -> Style.FormatOutput where Style.FormatInput == Config {
-        style.format(self)
     }
 }

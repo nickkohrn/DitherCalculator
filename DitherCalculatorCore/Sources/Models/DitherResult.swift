@@ -24,8 +24,19 @@ extension DitherResult {
 }
 
 public struct DitherResultFormat: FormatStyle {
-    public func format(_ value: DitherResult) -> LocalizedStringResource {
-        "^[\(value.pixels) pixel](inflect: true)"
+    public func format(_ value: DitherResult) -> AttributedString {
+        var string = AttributedString(localized: "\(value.pixels) pixels")
+        var morphology = Morphology()
+        let number: Morphology.GrammaticalNumber
+        switch value.pixels {
+        case 0: number = .zero
+        case 1: number = .singular
+        default: number = .plural
+        }
+        morphology.number = number
+        string.inflect = InflectionRule(morphology: morphology)
+        let formattedResult = string.inflected()
+        return formattedResult
     }
 }
 

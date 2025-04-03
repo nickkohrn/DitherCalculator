@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/22/25.
 //
 
+import Models
 import SwiftUI
 
 // TODO: Handle errors
@@ -19,36 +20,6 @@ struct DitherCalculatorApp: App {
                 ConfigCalculationView()
             }
         }
-    }
-}
-
-public struct FocalLength: Equatable {
-    public typealias Unit = UnitLength
-    public static let unit: Self.Unit = .millimeters
-    public let measurement: Measurement<Self.Unit>
-
-    public init(value: Int) {
-        measurement = Measurement(value: Double(value), unit: Self.unit)
-    }
-}
-
-public struct PixelSize: Equatable {
-    public typealias Unit = UnitLength
-    public static let unit: Self.Unit = .micrometers
-    public let measurement: Measurement<Self.Unit>
-
-    public init(value: Double) {
-        measurement = Measurement(value: value, unit: Self.unit)
-    }
-}
-
-struct EquipmentMetadata: Equatable {
-    let focalLength: FocalLength
-    let pixelSize: PixelSize
-
-    init(focalLength: Int, pixelSize: Double) {
-        self.focalLength = FocalLength(value: focalLength)
-        self.pixelSize = PixelSize(value: pixelSize)
     }
 }
 

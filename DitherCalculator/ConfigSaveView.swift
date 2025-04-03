@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import Models
 import Observation
 import SwiftUI
 

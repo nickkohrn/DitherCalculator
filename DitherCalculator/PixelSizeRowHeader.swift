@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/29/25.
 //
 
+import Models
 import SwiftUI
 
 public struct PixelSizeRowHeader: View {
