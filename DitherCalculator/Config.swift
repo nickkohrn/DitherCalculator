@@ -21,9 +21,9 @@ public final class Config {
         case type = "Config"
     }
 
-    public var _guidingFocalLength: Double?
+    public var _guidingFocalLength: Int?
     public var _guidingPixelSize: Double?
-    public var _imagingFocalLength: Double?
+    public var _imagingFocalLength: Int?
     public var _imagingPixelSize: Double?
     public var maxPixelShift: Int?
     public var name: String?
@@ -32,7 +32,7 @@ public final class Config {
 
     public var guidingFocalLength: FocalLength? {
         guard let _guidingFocalLength else { return nil }
-        return FocalLength(value: Double(_guidingFocalLength))
+        return FocalLength(value: _guidingFocalLength)
     }
 
     public var guidingPixelSize: PixelSize? {
@@ -51,9 +51,9 @@ public final class Config {
     }
 
     public init(
-        guidingFocalLength: Double?,
+        guidingFocalLength: Int?,
         guidingPixelSize: Double?,
-        imagingFocalLength: Double?,
+        imagingFocalLength: Int?,
         imagingPixelSize: Double?,
         maxPixelShift: Int?,
         name: String?,
@@ -78,9 +78,9 @@ extension Config: Identifiable {
 extension Config {
     public convenience init?(from record: CKRecord) {
         self.init(
-            guidingFocalLength: record[Config.Key.guidingFocalLength.rawValue] as? Double,
+            guidingFocalLength: record[Config.Key.guidingFocalLength.rawValue] as? Int,
             guidingPixelSize: record[Config.Key.guidingPixelSize.rawValue] as? Double,
-            imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Double,
+            imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Int,
             imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
             maxPixelShift: record[Config.Key.maxPixelShift.rawValue] as? Int,
             name: record[Config.Key.name.rawValue] as? String,

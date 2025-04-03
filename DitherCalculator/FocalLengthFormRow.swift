@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FocalLengthFormRow: View {
-    @Binding var value: Double?
+    @Binding var value: Int?
     let onHeaderTap: () -> Void
 
     var body: some View {

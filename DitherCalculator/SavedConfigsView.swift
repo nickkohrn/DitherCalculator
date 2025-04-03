@@ -53,20 +53,20 @@ final class SavedConfigsViewModel {
 
     public func result(for config: Config) -> DitherResult? {
         guard
-            let imagingFocalLength = config.imagingFocalLength,
+            let imagingFocalLength = config._imagingFocalLength,
             let imagingPixelSize = config.imagingPixelSize,
-            let guidingFocalLength = config.guidingFocalLength,
+            let guidingFocalLength = config._guidingFocalLength,
             let guidingPixelSize = config.guidingPixelSize,
             let scale = config.scale,
             let maxPixelShift = config.maxPixelShift
         else { return nil }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
-                focalLength: imagingFocalLength.measurement.value,
+                focalLength: imagingFocalLength,
                 pixelSize: imagingPixelSize.measurement.value
             ),
             guidingMetadata: EquipmentMetadata(
-                focalLength: guidingFocalLength.measurement.value,
+                focalLength: guidingFocalLength,
                 pixelSize: guidingPixelSize.measurement.value
             ),
             desiredImagingShiftPixels: Double(maxPixelShift),

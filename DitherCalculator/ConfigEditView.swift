@@ -12,9 +12,9 @@ import SwiftUI
 @MainActor @Observable
 final class ConfigEditViewModel {
     private var existingConfig: Config?
-    var guidingFocalLength: Double?
+    var guidingFocalLength: Int?
     var guidingPixelSize: Double?
-    var imagingFocalLength: Double?
+    var imagingFocalLength: Int?
     var imagingPixelSize: Double?
     var isSaving = false
     var maxPixelShift: Int?
@@ -33,9 +33,9 @@ final class ConfigEditViewModel {
               let scale else {
             return true
         }
-        return guidingFocalLength == existingConfig.guidingFocalLength?.measurement.value
+        return guidingFocalLength == existingConfig._guidingFocalLength
         && guidingPixelSize == existingConfig.guidingPixelSize?.measurement.value
-        && imagingFocalLength == existingConfig.imagingFocalLength?.measurement.value
+        && imagingFocalLength == existingConfig._imagingFocalLength
         && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
         && maxPixelShift == existingConfig.maxPixelShift
         && scale == existingConfig.scale
@@ -50,9 +50,9 @@ final class ConfigEditViewModel {
 
     func onAppear(with config: Config) {
         _existingConfig = config
-        guidingFocalLength = config.guidingFocalLength?.measurement.value
+        guidingFocalLength = config._guidingFocalLength
         guidingPixelSize = config.guidingPixelSize?.measurement.value
-        imagingFocalLength = config.imagingFocalLength?.measurement.value
+        imagingFocalLength = config._imagingFocalLength
         imagingPixelSize = config.imagingPixelSize?.measurement.value
         maxPixelShift = config.maxPixelShift
         name = config.name ?? ""
@@ -70,11 +70,11 @@ final class ConfigEditViewModel {
         else { return nil }
         let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
             imagingMetadata: EquipmentMetadata(
-                focalLength: Double(imagingFocalLength),
+                focalLength: imagingFocalLength,
                 pixelSize: imagingPixelSize
             ),
             guidingMetadata: EquipmentMetadata(
-                focalLength: Double(guidingFocalLength),
+                focalLength: guidingFocalLength,
                 pixelSize: guidingPixelSize
             ),
             desiredImagingShiftPixels: Double(maxPixelShift),
