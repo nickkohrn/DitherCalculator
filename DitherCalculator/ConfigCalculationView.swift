@@ -24,7 +24,7 @@ public final class ConfigCalculationViewModel {
 
     var isShowingSaveConfigView = false
     var isShowingSavedConfigsView = false
-    var selectedComponent: CalculationComponent?
+    var selectedComponent: ConfigCalculator.Component?
 
     var disableSave: Bool {
         result() == nil

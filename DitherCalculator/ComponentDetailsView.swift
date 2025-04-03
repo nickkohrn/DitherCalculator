@@ -10,9 +10,9 @@ import SwiftUI
 
 @MainActor @Observable
 public final class ComponentDetailsViewModel {
-    public let component: CalculationComponent
+    public let component: ConfigCalculator.Component
 
-    public init(component: CalculationComponent) {
+    public init(component: ConfigCalculator.Component) {
         self.component = component
     }
 }
@@ -43,37 +43,37 @@ public struct ComponentDetailsView: View {
     }
 }
 
-#Preview(CalculationComponent.imagingFocalLength.title) {
+#Preview(ConfigCalculator.Component.imagingFocalLength.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .imagingFocalLength))
     }
 }
 
-#Preview(CalculationComponent.imagingPixelSize.title) {
+#Preview(ConfigCalculator.Component.imagingPixelSize.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .imagingPixelSize))
     }
 }
 
-#Preview(CalculationComponent.guidingFocalLength.title) {
+#Preview(ConfigCalculator.Component.guidingFocalLength.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .guidingFocalLength))
     }
 }
 
-#Preview(CalculationComponent.guidingPixelSize.title) {
+#Preview(ConfigCalculator.Component.guidingPixelSize.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .guidingPixelSize))
     }
 }
 
-#Preview(CalculationComponent.scale.title) {
+#Preview(ConfigCalculator.Component.scale.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .scale))
     }
 }
 
-#Preview(CalculationComponent.pixelShift.title) {
+#Preview(ConfigCalculator.Component.pixelShift.title) {
     NavigationStack {
         ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: .pixelShift))
     }

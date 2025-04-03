@@ -20,7 +20,7 @@ final class ConfigEditViewModel {
     var maxPixelShift: Int?
     var name = ""
     var scale: Double?
-    var selectedComponent: CalculationComponent?
+    var selectedComponent: ConfigCalculator.Component?
     var shouldDismiss = false
 
     var disableSave: Bool {
