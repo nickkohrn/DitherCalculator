@@ -52,27 +52,7 @@ final class SavedConfigsViewModel {
     }
 
     public func result(for config: Config) -> DitherResult? {
-        guard
-            let imagingFocalLength = config._imagingFocalLength,
-            let imagingPixelSize = config.imagingPixelSize,
-            let guidingFocalLength = config._guidingFocalLength,
-            let guidingPixelSize = config.guidingPixelSize,
-            let scale = config.scale,
-            let maxPixelShift = config.maxPixelShift
-        else { return nil }
-        let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
-            imagingMetadata: EquipmentMetadata(
-                focalLength: imagingFocalLength,
-                pixelSize: imagingPixelSize.measurement.value
-            ),
-            guidingMetadata: EquipmentMetadata(
-                focalLength: guidingFocalLength,
-                pixelSize: guidingPixelSize.measurement.value
-            ),
-            desiredImagingShiftPixels: Double(maxPixelShift),
-            scale: scale
-        ))
-        return result
+        try? ConfigCalculator.result(for: config)
     }
 
     func tapped(_ config: Config) {

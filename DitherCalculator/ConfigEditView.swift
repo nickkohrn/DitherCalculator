@@ -59,28 +59,8 @@ final class ConfigEditViewModel {
         scale = config.scale
     }
 
-    public func result() -> DitherResult? {
-        guard
-            let imagingFocalLength,
-            let imagingPixelSize,
-            let guidingFocalLength,
-            let guidingPixelSize,
-            let scale,
-            let maxPixelShift
-        else { return nil }
-        let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
-            imagingMetadata: EquipmentMetadata(
-                focalLength: imagingFocalLength,
-                pixelSize: imagingPixelSize
-            ),
-            guidingMetadata: EquipmentMetadata(
-                focalLength: guidingFocalLength,
-                pixelSize: guidingPixelSize
-            ),
-            desiredImagingShiftPixels: Double(maxPixelShift),
-            scale: scale
-        ))
-        return result
+    public func result(for config: Config) -> DitherResult? {
+        try? ConfigCalculator.result(for: config)
     }
 
     func tappedSaveButton(for config: Config, onSuccess: @escaping (Config) -> Void) {
@@ -164,7 +144,7 @@ struct ConfigEditView: View {
                 ControlSectionHeader()
             }
             Section {
-                LabeledResultRow(result: viewModel.result())
+                LabeledResultRow(result: viewModel.result(for: config))
             }
         }
         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -199,7 +179,7 @@ struct ConfigEditView: View {
                 dismiss()
             }
         }
-        .onChange(of: viewModel.result()) { oldValue, newValue in
+        .onChange(of: viewModel.result(for: config)) { oldValue, newValue in
             guard oldValue != newValue else { return }
             announce(result: newValue)
         }

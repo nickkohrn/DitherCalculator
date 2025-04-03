@@ -22,27 +22,7 @@ final class ConfigDetailsViewModel {
     }
 
     public func result(for config: Config) -> DitherResult? {
-        guard
-            let imagingFocalLength = config._imagingFocalLength,
-            let imagingPixelSize = config.imagingPixelSize?.measurement.value,
-            let guidingFocalLength = config._guidingFocalLength,
-            let guidingPixelSize = config.guidingPixelSize?.measurement.value,
-            let scale = config.scale,
-            let maxPixelShift = config.maxPixelShift
-        else { return nil }
-        let result = try? DitherCalculator.calculateDitherPixels(with: DitherParameters(
-            imagingMetadata: EquipmentMetadata(
-                focalLength: imagingFocalLength,
-                pixelSize: imagingPixelSize
-            ),
-            guidingMetadata: EquipmentMetadata(
-                focalLength: guidingFocalLength,
-                pixelSize: guidingPixelSize
-            ),
-            desiredImagingShiftPixels: Double(maxPixelShift),
-            scale: scale
-        ))
-        return result
+        try? ConfigCalculator.result(for: config)
     }
 
     func tappedDeleteButton() {
