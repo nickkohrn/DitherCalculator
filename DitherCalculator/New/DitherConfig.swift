@@ -15,7 +15,7 @@ public struct DitherConfig {
     public let guidingFocalLength: Double
     public let guidingPixelSize: Double
     public let scale: Double
-    public let maxPixelShift: Int
+    public let maxPixelShift: Double
     public var name: String
     public let recordID: CKRecord.ID
 
@@ -25,7 +25,7 @@ public struct DitherConfig {
         guidingFocalLength: Double,
         guidingPixelSize: Double,
         scale: Double,
-        maxPixelShift: Int,
+        maxPixelShift: Double,
         name: String,
         recordID: CKRecord.ID
     ) {
@@ -81,7 +81,7 @@ extension DitherConfig {
             let guidingFocalLength = record[DitherConfig.Key.guidingFocalLength.rawValue] as? Double,
             let guidingPixelSize = record[DitherConfig.Key.guidingPixelSize.rawValue] as? Double,
             let scale = record[DitherConfig.Key.scale.rawValue] as? Double,
-            let maxPixelShift = record[DitherConfig.Key.maxPixelShift.rawValue] as? Int,
+            let maxPixelShift = record[DitherConfig.Key.maxPixelShift.rawValue] as? Double,
             let name = record[DitherConfig.Key.name.rawValue] as? String
         else { return nil }
         self = DitherConfig(

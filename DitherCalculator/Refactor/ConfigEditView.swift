@@ -17,7 +17,7 @@ final class ConfigEditViewModel {
     var imagingFocalLength: Double?
     var imagingPixelSize: Double?
     var isSaving = false
-    var maxPixelShift: Int?
+    var maxPixelShift: Double?
     var name = ""
     var scale: Double?
     var selectedComponent: CalculationComponent?

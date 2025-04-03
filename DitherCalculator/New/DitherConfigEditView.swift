@@ -19,7 +19,7 @@ public final class DitherConfigEditViewModel {
     public var guidingFocalLength: Double?
     public var guidingPixelSize: Double?
     public var scale: Double?
-    public var maxPixelShift: Int?
+    public var maxPixelShift: Double?
     public var selectedComponent: CalculationComponent?
     public var isSaving = false
     public var shouldDismiss = false

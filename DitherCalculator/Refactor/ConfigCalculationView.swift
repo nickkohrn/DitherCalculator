@@ -17,7 +17,7 @@ final class ConfigCalculationViewModel {
     var imagingFocalLength: Double?
     var imagingPixelSize: Double?
     var isShowingSavedConfigsView = false
-    var maxPixelShift: Int?
+    var maxPixelShift: Double?
     var scale: Double?
     var selectedComponent: CalculationComponent?
 

@@ -8,7 +8,7 @@
 import SwiftUI
 
 // TODO: Handle errors
-// TODO: Handle iCloud statues
+// TODO: Handle iCloud states
 // TODO: Modularize components into package modules
 
 @main
@@ -52,7 +52,75 @@ struct EquipmentMetadata: Equatable {
     }
 }
 
-#warning("Create new calculator to use a Config")
+struct ConfigCalculator {
+    enum Error: LocalizedError, Equatable {
+        case invalidValue(parameter: String)
+
+        var errorDescription: String? { "Invalid Value" }
+
+        var failureReason: String? {
+            switch self {
+            case .invalidValue(let parameter): "\(parameter) must be a number greater than \(0.formatted())."
+            }
+        }
+    }
+
+    /// Conversion factor: approximately 206,265 arcseconds in one radian.
+    static let arcsecondsPerRadian = 206.265
+
+    static func result(for config: Config) throws(ConfigCalculator.Error) -> DitherResult {
+        guard let imagingFocalLength = config.imagingFocalLength else {
+            throw Error.invalidValue(parameter: CalculationComponent.imagingFocalLength.title)
+        }
+        guard let imagingPixelSize = config.imagingPixelSize else {
+            throw Error.invalidValue(parameter: CalculationComponent.imagingPixelSize.title)
+        }
+        guard let guidingFocalLength = config.guidingFocalLength else {
+            throw Error.invalidValue(parameter: CalculationComponent.guidingFocalLength.title)
+        }
+        guard let guidingPixelSize = config.guidingPixelSize else {
+            throw Error.invalidValue(parameter: CalculationComponent.guidingPixelSize.title)
+        }
+        guard let maxPixelShift = config.maxPixelShift else {
+            throw Error.invalidValue(parameter: CalculationComponent.pixelShift.title)
+        }
+        guard let scale = config.scale else {
+            throw Error.invalidValue(parameter: CalculationComponent.scale.title)
+        }
+        // List parameters for validation.
+        let parameters: [(name: String, value: Double)] = [
+            (CalculationComponent.imagingFocalLength.title, imagingFocalLength.measurement.value),
+            (CalculationComponent.imagingPixelSize.title, imagingPixelSize.measurement.value),
+            (CalculationComponent.guidingFocalLength.title, guidingFocalLength.measurement.value),
+            (CalculationComponent.guidingPixelSize.title, guidingPixelSize.measurement.value),
+            (CalculationComponent.pixelShift.title, maxPixelShift),
+            (CalculationComponent.scale.title, scale)
+        ]
+
+        // Validate each parameter.
+        for parameter in parameters {
+            guard parameter.value.isFinite, !parameter.value.isNaN, parameter.value > 0 else {
+                throw Error.invalidValue(parameter: parameter.name)
+            }
+        }
+
+        // Calculate imaging and guiding scales in arcsec per pixel.
+        let imagingScale = (arcsecondsPerRadian * imagingPixelSize.measurement.value) / imagingFocalLength.measurement.value
+        let guidingScale = (arcsecondsPerRadian * guidingPixelSize.measurement.value) / guidingFocalLength.measurement.value
+
+        // Determine the desired angular shift (in arcseconds) for the imaging camera.
+        let desiredArcsecShift = maxPixelShift * imagingScale
+
+        // Calculate the base number of guide pixels (assuming a scale of 1).
+        let baseGuidePixels = desiredArcsecShift / guidingScale
+
+        // Adjust the guide pixel value by the scale factor.
+        let adjustedGuidePixels = baseGuidePixels / scale
+
+        // Round up to ensure the shift meets or exceeds the desired value.
+        return DitherResult(pixels: Int(adjustedGuidePixels.rounded(.up)))
+    }
+}
 
 
 
@@ -96,14 +164,14 @@ struct EquipmentMetadata: Equatable {
 struct DitherParameters: Equatable {
     var imagingMetadata: EquipmentMetadata
     let guidingMetadata: EquipmentMetadata
-    let desiredImagingShiftPixels: Int
+    let desiredImagingShiftPixels: Double
     let scale: Double  // The scale factor from PHD2's Advanced Setup > Dither Settings.
 
     /// Default initializer with scale defaulting to 1.0.
     init(
         imagingMetadata: EquipmentMetadata,
         guidingMetadata: EquipmentMetadata,
-        desiredImagingShiftPixels: Int,
+        desiredImagingShiftPixels: Double,
         scale: Double = 1.0
     ) {
         self.imagingMetadata = imagingMetadata

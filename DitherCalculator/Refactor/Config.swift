@@ -21,11 +21,11 @@ public final class Config {
         case type = "Config"
     }
 
-    public var _guidingFocalLength: Double?
-    public var _guidingPixelSize: Double?
-    public var _imagingFocalLength: Double?
-    public var _imagingPixelSize: Double?
-    public var maxPixelShift: Int?
+    private var _guidingFocalLength: Double?
+    private var _guidingPixelSize: Double?
+    private var _imagingFocalLength: Double?
+    private var _imagingPixelSize: Double?
+    public var maxPixelShift: Double?
     public var name: String?
     public let recordID: CKRecord.ID
     public var scale: Double?
@@ -55,7 +55,7 @@ public final class Config {
         guidingPixelSize: Double?,
         imagingFocalLength: Double?,
         imagingPixelSize: Double?,
-        maxPixelShift: Int?,
+        maxPixelShift: Double?,
         name: String?,
         recordID: CKRecord.ID,
         scale: Double?
@@ -82,7 +82,7 @@ extension Config {
             guidingPixelSize: record[Config.Key.guidingPixelSize.rawValue] as? Double,
             imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Double,
             imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
-            maxPixelShift: record[Config.Key.maxPixelShift.rawValue] as? Int,
+            maxPixelShift: record[Config.Key.maxPixelShift.rawValue] as? Double,
             name: record[Config.Key.name.rawValue] as? String,
             recordID: record.recordID,
             scale: record[Config.Key.scale.rawValue] as? Double

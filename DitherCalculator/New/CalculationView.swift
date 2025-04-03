@@ -16,7 +16,7 @@ public final class CalculationViewModel {
     public var guidingFocalLength: Double?
     public var guidingPixelSize: Double?
     public var scale: Double?
-    public var maxPixelShift: Int?
+    public var maxPixelShift: Double?
     public var selectedComponent: CalculationComponent?
     public var configToSave: DitherConfig?
     public var isShowingSavedConfigs = false
