@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F9836BE72D9EBBFA0028E812 /* DitherCalculatorCore in Resources */ = {isa = PBXBuildFile; fileRef = F9836BE62D9EBBFA0028E812 /* DitherCalculatorCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F9D35DBC2D8F9BEC0037E397 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F9836BE62D9EBBFA0028E812 /* DitherCalculatorCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DitherCalculatorCore; sourceTree = "<group>"; };
 		F9D35DAB2D8F9BEA0037E397 /* DitherCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DitherCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9D35DBB2D8F9BEC0037E397 /* DitherCalculatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DitherCalculatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9D35DC52D8F9BEC0037E397 /* DitherCalculatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DitherCalculatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		F9D35DA22D8F9BEA0037E397 = {
 			isa = PBXGroup;
 			children = (
+				F9836BE62D9EBBFA0028E812 /* DitherCalculatorCore */,
 				F9D35DAD2D8F9BEA0037E397 /* DitherCalculator */,
 				F9D35DBE2D8F9BEC0037E397 /* DitherCalculatorTests */,
 				F9D35DC82D8F9BEC0037E397 /* DitherCalculatorUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9836BE72D9EBBFA0028E812 /* DitherCalculatorCore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
