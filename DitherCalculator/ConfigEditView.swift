@@ -181,7 +181,7 @@ struct ConfigEditView: View {
                 if viewModel.isSaving {
                     ProgressView()
                 } else {
-                    Button("Save") {
+                    SaveButton {
                         viewModel.tappedSaveButton(for: config) { updatedConfig in
                             config.updateWithValues(from: updatedConfig)
                         }

@@ -111,7 +111,7 @@ struct ConfigSaveView: View {
                 if viewModel.isSaving {
                     ProgressView()
                 } else {
-                    Button("Save") { viewModel.tappedSaveButton(for: config) }
+                    SaveButton { viewModel.tappedSaveButton(for: config) }
                         .disabled(viewModel.disableSave)
                 }
             }
