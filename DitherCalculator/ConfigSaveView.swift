@@ -41,7 +41,7 @@ final class ConfigSaveViewModel {
                 focalLength: guidingFocalLength.measurement.value,
                 pixelSize: guidingPixelSize.measurement.value
             ),
-            desiredImagingShiftPixels: maxPixelShift,
+            desiredImagingShiftPixels: Double(maxPixelShift),
             scale: scale
         ))
         return result

@@ -10,15 +10,20 @@ import Observation
 import SwiftUI
 
 @MainActor @Observable
-final class ConfigCalculationViewModel {
-    var configToSave: Config?
-    var guidingFocalLength: Double?
-    var guidingPixelSize: Double?
-    var imagingFocalLength: Double?
-    var imagingPixelSize: Double?
+public final class ConfigCalculationViewModel {
+    public var config = Config(
+        guidingFocalLength: nil,
+        guidingPixelSize: nil,
+        imagingFocalLength: nil,
+        imagingPixelSize: nil,
+        maxPixelShift: nil,
+        name: nil,
+        recordID: CKRecord.ID(recordName: UUID().uuidString),
+        scale: nil
+    )
+
+    var isShowingSaveConfigView = false
     var isShowingSavedConfigsView = false
-    var maxPixelShift: Double?
-    var scale: Double?
     var selectedComponent: CalculationComponent?
 
     var disableSave: Bool {
@@ -26,40 +31,11 @@ final class ConfigCalculationViewModel {
     }
 
     func result() -> DitherResult? {
-        guard let guidingFocalLength,
-              let guidingPixelSize,
-              let imagingFocalLength,
-              let imagingPixelSize,
-              let maxPixelShift,
-              let scale else {
-            return nil
-        }
-        let parameters = DitherParameters(
-            imagingMetadata: EquipmentMetadata(
-                focalLength: Double(imagingFocalLength),
-                pixelSize: imagingPixelSize
-            ),
-            guidingMetadata: EquipmentMetadata(
-                focalLength: Double(guidingFocalLength),
-                pixelSize: guidingPixelSize
-            ),
-            desiredImagingShiftPixels: maxPixelShift,
-            scale: scale
-        )
-        return try? DitherCalculator.calculateDitherPixels(with: parameters)
+        try? ConfigCalculator.result(for: config)
     }
 
     func tappedSaveButton() {
-        configToSave = Config(
-            guidingFocalLength: guidingFocalLength,
-            guidingPixelSize: guidingPixelSize,
-            imagingFocalLength: imagingFocalLength,
-            imagingPixelSize: imagingPixelSize,
-            maxPixelShift: maxPixelShift,
-            name: "",
-            recordID: CKRecord.ID(recordName: UUID().uuidString),
-            scale: scale
-        )
+        isShowingSaveConfigView = true
     }
 
     func tappedSavedConfigsButton() {
@@ -74,11 +50,11 @@ struct ConfigCalculationView: View {
         Form {
             Section {
                 FocalLengthFormRow(
-                    value: $viewModel.imagingFocalLength,
+                    value: $viewModel.config._imagingFocalLength,
                     onHeaderTap: { viewModel.selectedComponent = .imagingFocalLength }
                 )
                 PixelSizeFormRow(
-                    value: $viewModel.imagingPixelSize,
+                    value: $viewModel.config._imagingPixelSize,
                     onHeaderTap: { viewModel.selectedComponent = .imagingPixelSize }
                 )
             } header: {
@@ -86,11 +62,11 @@ struct ConfigCalculationView: View {
             }
             Section {
                 FocalLengthFormRow(
-                    value: $viewModel.guidingFocalLength,
+                    value: $viewModel.config._guidingFocalLength,
                     onHeaderTap: { viewModel.selectedComponent = .guidingFocalLength }
                 )
                 PixelSizeFormRow(
-                    value: $viewModel.guidingPixelSize,
+                    value: $viewModel.config._guidingPixelSize,
                     onHeaderTap: { viewModel.selectedComponent = .guidingPixelSize }
                 )
             } header: {
@@ -98,11 +74,11 @@ struct ConfigCalculationView: View {
             }
             Section {
                 ScaleFormRow(
-                    value: $viewModel.scale,
+                    value: $viewModel.config.scale,
                     onHeaderTap: { viewModel.selectedComponent = .scale }
                 )
                 MaxPixelShiftFormRow(
-                    value: $viewModel.maxPixelShift,
+                    value: $viewModel.config.maxPixelShift,
                     onHeaderTap: { viewModel.selectedComponent = .pixelShift }
                 )
             } header: {
@@ -126,10 +102,10 @@ struct ConfigCalculationView: View {
                 }
             }
         }
-        .sheet(item: $viewModel.configToSave) { config in
+        .sheet(isPresented: $viewModel.isShowingSaveConfigView) {
             NavigationStack {
                 ConfigSaveView()
-                    .environment(config)
+                    .environment(viewModel.config)
             }
         }
         .sheet(isPresented: $viewModel.isShowingSavedConfigsView) {

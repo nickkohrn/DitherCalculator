@@ -39,7 +39,7 @@ final class ConfigDetailsViewModel {
                 focalLength: guidingFocalLength,
                 pixelSize: guidingPixelSize
             ),
-            desiredImagingShiftPixels: maxPixelShift,
+            desiredImagingShiftPixels: Double(maxPixelShift),
             scale: scale
         ))
         return result

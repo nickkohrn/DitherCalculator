@@ -17,7 +17,7 @@ final class ConfigEditViewModel {
     var imagingFocalLength: Double?
     var imagingPixelSize: Double?
     var isSaving = false
-    var maxPixelShift: Double?
+    var maxPixelShift: Int?
     var name = ""
     var scale: Double?
     var selectedComponent: CalculationComponent?
@@ -77,7 +77,7 @@ final class ConfigEditViewModel {
                 focalLength: Double(guidingFocalLength),
                 pixelSize: guidingPixelSize
             ),
-            desiredImagingShiftPixels: maxPixelShift,
+            desiredImagingShiftPixels: Double(maxPixelShift),
             scale: scale
         ))
         return result

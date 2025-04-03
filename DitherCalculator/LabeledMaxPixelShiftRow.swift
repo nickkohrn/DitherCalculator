@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LabeledMaxPixelShiftRow: View {
-    let value: Double?
+    let value: Int?
 
     var body: some View {
         LabeledContent("Max Pixel Shift") {

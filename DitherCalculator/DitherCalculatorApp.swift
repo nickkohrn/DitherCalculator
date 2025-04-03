@@ -93,7 +93,7 @@ struct ConfigCalculator {
             (CalculationComponent.imagingPixelSize.title, imagingPixelSize.measurement.value),
             (CalculationComponent.guidingFocalLength.title, guidingFocalLength.measurement.value),
             (CalculationComponent.guidingPixelSize.title, guidingPixelSize.measurement.value),
-            (CalculationComponent.pixelShift.title, maxPixelShift),
+            (CalculationComponent.pixelShift.title, Double(maxPixelShift)),
             (CalculationComponent.scale.title, scale)
         ]
 
@@ -109,7 +109,7 @@ struct ConfigCalculator {
         let guidingScale = (arcsecondsPerRadian * guidingPixelSize.measurement.value) / guidingFocalLength.measurement.value
 
         // Determine the desired angular shift (in arcseconds) for the imaging camera.
-        let desiredArcsecShift = maxPixelShift * imagingScale
+        let desiredArcsecShift = Double(maxPixelShift) * imagingScale
 
         // Calculate the base number of guide pixels (assuming a scale of 1).
         let baseGuidePixels = desiredArcsecShift / guidingScale
