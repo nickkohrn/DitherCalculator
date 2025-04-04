@@ -15,6 +15,9 @@ let package = Package(
         .library(
             name: "Models",
             targets: ["Models"]),
+        .library(
+            name: "Syncing",
+            targets: ["Syncing"]),
     ],
     targets: [
         .target(
@@ -33,5 +36,12 @@ let package = Package(
         .testTarget(
             name: "ModelsTests",
             dependencies: ["Models"]),
+        .target(
+            name: "Syncing",
+            dependencies: ["Models"]),
+        .testTarget(
+            name: "TestUtilities",
+            dependencies: ["Models",
+                           "Syncing"]),
     ]
 )
