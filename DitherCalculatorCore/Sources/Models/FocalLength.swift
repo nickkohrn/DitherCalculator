@@ -6,13 +6,31 @@
 //
 
 import Foundation
+import Observation
 
-public struct FocalLength: Equatable {
-    public typealias Unit = UnitLength
-    public static let unit: Self.Unit = .millimeters
-    public let measurement: Measurement<Self.Unit>
+@Observable
+public final class FocalLength {
+    public static let unit: UnitLength = .millimeters
+    public var value: Int?
 
-    public init(value: Int) {
-        measurement = Measurement(value: Double(value), unit: Self.unit)
+    public var measurement: Measurement<UnitLength> {
+        guard let value else { return Measurement(value: 0, unit: Self.unit)}
+        return Measurement(value: Double(value), unit: Self.unit)
+    }
+
+    public init(value: Int?) {
+        self.value = value
+    }
+}
+
+extension FocalLength: Equatable {
+    public static func == (lhs: FocalLength, rhs: FocalLength) -> Bool {
+        lhs.value == rhs.value
+    }
+}
+
+extension FocalLength: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
     }
 }

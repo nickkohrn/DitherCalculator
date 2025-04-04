@@ -14,7 +14,7 @@ struct ConfigTests {
 
     @Test func configInitComputesExpectedComputedProperties() throws {
         let sut = Config(
-            guidingFocalLength: 200,
+            guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
             imagingFocalLength: 382,
             imagingPixelSize: 3.76,
@@ -61,7 +61,7 @@ struct ConfigTests {
     @Test func configCreatesNewCKRecord() throws {
         let recordID = CKRecord.ID(recordName: UUID().uuidString)
         let config = Config(
-            guidingFocalLength: 200,
+            guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
             imagingFocalLength: 382,
             imagingPixelSize: 3.76,
@@ -94,7 +94,7 @@ struct ConfigTests {
     @Test func configUpdatesWithNewValuesFromConfig() throws {
         let recordID = CKRecord.ID(recordName: UUID().uuidString)
         let sut = Config(
-            guidingFocalLength: 100,
+            guidingFocalLength: FocalLength(value: 100),
             guidingPixelSize: 2.5,
             imagingFocalLength: 300,
             imagingPixelSize: 3.2,
@@ -105,7 +105,7 @@ struct ConfigTests {
         )
 
         let updated = Config(
-            guidingFocalLength: 200,
+            guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
             imagingFocalLength: 382,
             imagingPixelSize: 3.76,

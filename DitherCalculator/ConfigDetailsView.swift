@@ -81,7 +81,7 @@ struct ConfigDetailsView: View {
                 ImagingSectionHeader()
             }
             Section {
-                LabeledFocalLengthRow(value: config.guidingFocalLength?.measurement)
+                LabeledFocalLengthRow(value: config.guidingFocalLength.measurement)
                 LabeledPixelSizeRow(value: config.guidingPixelSize?.measurement)
             } header: {
                 GuidingSectionHeader()
@@ -135,7 +135,7 @@ struct ConfigDetailsView: View {
     ConfigDetailsView(viewModel: ConfigDetailsViewModel(didDeleteConfig: {_ in }))
         .environment(
             Config(
-                guidingFocalLength: 200,
+                guidingFocalLength: FocalLength(value: 200),
                 guidingPixelSize: 2.99,
                 imagingFocalLength: 382,
                 imagingPixelSize: 3.76,

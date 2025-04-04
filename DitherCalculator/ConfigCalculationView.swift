@@ -13,7 +13,7 @@ import SwiftUI
 @MainActor @Observable
 public final class ConfigCalculationViewModel {
     public var config = Config(
-        guidingFocalLength: nil,
+        guidingFocalLength: FocalLength(value: nil),
         guidingPixelSize: nil,
         imagingFocalLength: nil,
         imagingPixelSize: nil,
@@ -63,7 +63,7 @@ struct ConfigCalculationView: View {
             }
             Section {
                 FocalLengthFormRow(
-                    value: $viewModel.config._guidingFocalLength,
+                    value: $viewModel.config.guidingFocalLength.value,
                     onHeaderTap: { viewModel.selectedComponent = .guidingFocalLength }
                 )
                 PixelSizeFormRow(

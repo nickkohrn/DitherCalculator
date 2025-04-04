@@ -21,7 +21,7 @@ public final class Config {
         case type = "Config"
     }
 
-    public var _guidingFocalLength: Int?
+    public var guidingFocalLength = FocalLength(value: nil)
     public var _guidingPixelSize: Double?
     public var _imagingFocalLength: Int?
     public var _imagingPixelSize: Double?
@@ -29,11 +29,6 @@ public final class Config {
     public var name: String?
     public let recordID: CKRecord.ID
     public var scale: Double?
-
-    public var guidingFocalLength: FocalLength? {
-        guard let _guidingFocalLength else { return nil }
-        return FocalLength(value: _guidingFocalLength)
-    }
 
     public var guidingPixelSize: PixelSize? {
         guard let _guidingPixelSize else { return nil }
@@ -51,7 +46,7 @@ public final class Config {
     }
 
     public init(
-        guidingFocalLength: Int?,
+        guidingFocalLength: FocalLength,
         guidingPixelSize: Double?,
         imagingFocalLength: Int?,
         imagingPixelSize: Double?,
@@ -60,7 +55,7 @@ public final class Config {
         recordID: CKRecord.ID,
         scale: Double?
     ) {
-        self._guidingFocalLength = guidingFocalLength
+        self.guidingFocalLength = guidingFocalLength
         self._guidingPixelSize = guidingPixelSize
         self._imagingFocalLength = imagingFocalLength
         self._imagingPixelSize = imagingPixelSize
@@ -78,7 +73,7 @@ extension Config: Identifiable {
 extension Config {
     public convenience init?(from record: CKRecord) {
         self.init(
-            guidingFocalLength: record[Config.Key.guidingFocalLength.rawValue] as? Int,
+            guidingFocalLength: FocalLength(value: record[Config.Key.guidingFocalLength.rawValue] as? Int),
             guidingPixelSize: record[Config.Key.guidingPixelSize.rawValue] as? Double,
             imagingFocalLength: record[Config.Key.imagingFocalLength.rawValue] as? Int,
             imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
@@ -91,7 +86,7 @@ extension Config {
 
     public func newCKRecord() -> CKRecord {
         let record = CKRecord(recordType: Config.Key.type.rawValue, recordID: recordID)
-        record[Config.Key.guidingFocalLength.rawValue] = _guidingFocalLength
+        record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength.value
         record[Config.Key.guidingPixelSize.rawValue] = _guidingPixelSize
         record[Config.Key.imagingFocalLength.rawValue] = _imagingFocalLength
         record[Config.Key.imagingPixelSize.rawValue] = _imagingPixelSize

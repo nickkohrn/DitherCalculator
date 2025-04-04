@@ -35,7 +35,7 @@ final class ConfigEditViewModel {
               let scale else {
             return true
         }
-        return guidingFocalLength == existingConfig._guidingFocalLength
+        return guidingFocalLength == existingConfig.guidingFocalLength.value
         && guidingPixelSize == existingConfig.guidingPixelSize?.measurement.value
         && imagingFocalLength == existingConfig._imagingFocalLength
         && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
@@ -52,7 +52,7 @@ final class ConfigEditViewModel {
 
     func onAppear(with config: Config) {
         _existingConfig = config
-        guidingFocalLength = config._guidingFocalLength
+        guidingFocalLength = config.guidingFocalLength.value
         guidingPixelSize = config.guidingPixelSize?.measurement.value
         imagingFocalLength = config._imagingFocalLength
         imagingPixelSize = config.imagingPixelSize?.measurement.value
@@ -208,7 +208,7 @@ struct ConfigEditView: View {
         ConfigEditView()
             .environment(
                 Config(
-                    guidingFocalLength: 200,
+                    guidingFocalLength: FocalLength(value: 200),
                     guidingPixelSize: 2.99,
                     imagingFocalLength: 382,
                     imagingPixelSize: 3.76,
