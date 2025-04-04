@@ -12,7 +12,16 @@ import Foundation
 public protocol SyncService {
     func accountStatus() async throws -> CKAccountStatus
     func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID
-    func fetchConfigs() async throws -> [Config]
     func record(for recordID: CKRecord.ID) async throws -> CKRecord
     func save(_ record: CKRecord) async throws
+
+    func records(
+        matching query: CKQuery,
+        inZoneWith zoneID: CKRecordZone.ID?,
+        desiredKeys: [CKRecord.FieldKey]?,
+        resultsLimit: Int
+    ) async throws -> (
+        matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)],
+        queryCursor: CKQueryOperation.Cursor?
+    )
 }

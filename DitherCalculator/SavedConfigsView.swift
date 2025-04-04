@@ -10,13 +10,15 @@ import CoreUI
 import Models
 import Observation
 import SwiftUI
+import Syncing
 
-@MainActor @Observable
-final class SavedConfigsViewModel {
-    var configs = [Config]()
-    var didPerformInitialFetch = false
-    var isLoading = false
-    var selectedConfig: Config?
+@MainActor
+@Observable
+public final class SavedConfigsViewModel {
+    public var configs = [Config]()
+    private var didPerformInitialFetch = false
+    public var isLoading = false
+    public var selectedConfig: Config?
 
     init() {}
 
@@ -26,29 +28,35 @@ final class SavedConfigsViewModel {
         }
     }
 
-    private func fetchConfigs() async {
-        await MainActor.run {
-            isLoading = true
-        }
+    private func fetchConfigs(using syncService: any SyncService) async {
+        await MainActor.run { isLoading = true }
+
         do {
             let predicate = NSPredicate(value: true)
             let query = CKQuery(
                 recordType: Config.Key.type.rawValue,
                 predicate: predicate
             )
-            query.sortDescriptors = [NSSortDescriptor(key: Config.Key.imagingFocalLength.rawValue, ascending: true)]
-            let result = try await CKContainer.default().privateCloudDatabase.records(matching: query)
+            query.sortDescriptors = [NSSortDescriptor(key: Config.Key.name.rawValue, ascending: true)]
+            let result = try await syncService.records(
+                matching: query,
+                inZoneWith: nil,
+                desiredKeys: nil,
+                resultsLimit: CKQueryOperation.maximumResults
+            )
             let records = result.matchResults.compactMap { try? $0.1.get() }
-            configs = records.compactMap(Config.init)
+            let configs = records.compactMap(Config.init)
+
             await MainActor.run {
-                isLoading = false
-                didPerformInitialFetch = true
+                self.configs = configs
+                self.isLoading = false
+                self.didPerformInitialFetch = true
             }
         } catch {
             print(error)
             await MainActor.run {
-                isLoading = false
-                didPerformInitialFetch = true
+                self.isLoading = false
+                self.didPerformInitialFetch = true
             }
         }
     }
@@ -61,19 +69,22 @@ final class SavedConfigsViewModel {
         selectedConfig = config
     }
 
-    func tappedRefreshButton() {
+    func tappedRefreshButton(syncService: any SyncService) {
         Task {
-            await fetchConfigs()
+            await fetchConfigs(using: syncService)
         }
     }
 
-    func task() async {
+    func onAppear(syncService: any SyncService) {
         if didPerformInitialFetch { return }
-        await fetchConfigs()
+        Task {
+            await fetchConfigs(using: syncService)
+        }
     }
 }
 
 struct SavedConfigsView: View {
+    @Environment(CloudService.self) private var cloudService
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = SavedConfigsViewModel()
 
@@ -118,20 +129,22 @@ struct SavedConfigsView: View {
         }
         .navigationTitle("Saved")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await viewModel.task() }
+        .onAppear { viewModel.onAppear(syncService: cloudService) }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 CloseButton { dismiss() }
             }
             ToolbarItem(placement: .bottomBar) {
-                Button(action: viewModel.tappedRefreshButton) {
+                Button(action: {
+                    viewModel.tappedRefreshButton(syncService: cloudService)
+                }, label: {
                     if viewModel.isLoading {
                         ProgressView()
                     } else {
                         Label("Refresh", systemImage: "arrow.clockwise.circle")
                             .accessibilityHint("Fetches your latest collection of configurations from iCloud")
                     }
-                }
+                })
                 .disabled(viewModel.isLoading)
             }
         }

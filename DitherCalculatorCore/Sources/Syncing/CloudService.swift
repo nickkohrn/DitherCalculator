@@ -8,7 +8,9 @@
 import CloudKit
 import Foundation
 import Models
+import Observation
 
+@Observable
 public final class CloudService: SyncService {
     private let container: any CloudContainer
     private let database: any CloudDatabase
@@ -26,21 +28,13 @@ public final class CloudService: SyncService {
         try await database.deleteRecord(withID: recordID)
     }
 
-    public func fetchConfigs() async throws -> [Config] {
-        let predicate = NSPredicate(value: true)
-        let query = CKQuery(
-            recordType: Config.Key.type.rawValue,
-            predicate: predicate
-        )
-        query.sortDescriptors = [NSSortDescriptor(key: Config.Key.name.rawValue, ascending: true)]
-        let result = try await database.records(
-            matching: query,
-            inZoneWith: nil,
-            desiredKeys: nil,
-            resultsLimit: CKQueryOperation.maximumResults
-        )
-        let records = result.matchResults.compactMap { try? $0.1.get() }
-        return records.compactMap(Config.init)
+    public func records(
+        matching query: CKQuery,
+        inZoneWith zoneID: CKRecordZone.ID?,
+        desiredKeys: [CKRecord.FieldKey]?,
+        resultsLimit: Int
+    ) async throws -> (matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)], queryCursor: CKQueryOperation.Cursor?) {
+        try await database.records(matching: query, inZoneWith: zoneID, desiredKeys: desiredKeys, resultsLimit: resultsLimit)
     }
 
     public func record(for recordID: CKRecord.ID) async throws -> CKRecord {
