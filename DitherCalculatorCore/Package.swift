@@ -22,7 +22,8 @@ let package = Package(
     targets: [
         .target(
             name: "CoreUI",
-            dependencies: ["Models"]),
+            dependencies: ["FoundationExtensions",
+                           "Models"]),
         .target(
             name: "FoundationExtensions"),
         .testTarget(

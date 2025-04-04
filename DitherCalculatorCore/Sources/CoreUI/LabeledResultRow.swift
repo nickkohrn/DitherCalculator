@@ -5,14 +5,17 @@
 //  Created by Nick Kohrn on 3/31/25.
 //
 
-import CoreUI
 import Models
 import SwiftUI
 
-struct LabeledResultRow: View {
-    let result: DitherResult?
+public struct LabeledResultRow: View {
+    private let result: DitherResult?
 
-    var body: some View {
+    public init(result: DitherResult?) {
+        self.result = result
+    }
+
+    public var body: some View {
         LabeledContent("Result") {
             if let result {
                 DitherResultText(result: result)

@@ -8,10 +8,14 @@
 import Models
 import SwiftUI
 
-struct DitherResultText: View {
-    let result: DitherResult?
+public struct DitherResultText: View {
+    private let result: DitherResult?
 
-    var body: some View {
+    public init(result: DitherResult?) {
+        self.result = result
+    }
+
+    public var body: some View {
         if let result {
             Text(result.formatted(.pixels))
         } else {

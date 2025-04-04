@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct EmptyConfigsView: View {
+    public init() {}
+    
     public var body: some View {
         ContentUnavailableView(
             "No Configs",

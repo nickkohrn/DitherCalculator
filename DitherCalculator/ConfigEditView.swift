@@ -154,7 +154,7 @@ struct ConfigEditView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $viewModel.selectedComponent) { component in
             NavigationStack {
-                ComponentDetailsView(viewModel: ComponentDetailsViewModel(component: component))
+                ComponentDetailsView(component: component)
             }
             .presentationDetents([.medium, .large])
         }
