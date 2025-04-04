@@ -36,7 +36,7 @@ final class ConfigEditViewModel {
             return true
         }
         return guidingFocalLength == existingConfig.guidingFocalLength.value
-        && guidingPixelSize == existingConfig.guidingPixelSize?.measurement.value
+        && guidingPixelSize == existingConfig.guidingPixelSize.measurement.value
         && imagingFocalLength == existingConfig.imagingFocalLength.value
         && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
         && maxPixelShift == existingConfig.maxPixelShift
@@ -53,7 +53,7 @@ final class ConfigEditViewModel {
     func onAppear(with config: Config) {
         _existingConfig = config
         guidingFocalLength = config.guidingFocalLength.value
-        guidingPixelSize = config.guidingPixelSize?.measurement.value
+        guidingPixelSize = config.guidingPixelSize.measurement.value
         imagingFocalLength = config.imagingFocalLength.value
         imagingPixelSize = config.imagingPixelSize?.measurement.value
         maxPixelShift = config.maxPixelShift
@@ -209,7 +209,7 @@ struct ConfigEditView: View {
             .environment(
                 Config(
                     guidingFocalLength: FocalLength(value: 200),
-                    guidingPixelSize: 2.99,
+                    guidingPixelSize: PixelSize(value: 2.99),
                     imagingFocalLength: FocalLength(value: 382),
                     imagingPixelSize: 3.76,
                     maxPixelShift: 10,

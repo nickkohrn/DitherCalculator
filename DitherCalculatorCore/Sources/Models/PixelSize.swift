@@ -6,13 +6,31 @@
 //
 
 import Foundation
+import Observation
 
-public struct PixelSize: Equatable {
-    public typealias Unit = UnitLength
-    public static let unit: Self.Unit = .micrometers
-    public let measurement: Measurement<Self.Unit>
+@Observable
+public final class PixelSize {
+    public static let unit: UnitLength = .micrometers
+    public var value: Double?
 
-    public init(value: Double) {
-        measurement = Measurement(value: value, unit: Self.unit)
+    public var measurement: Measurement<UnitLength> {
+        guard let value else { return Measurement(value: 0, unit: Self.unit)}
+        return Measurement(value: value, unit: Self.unit)
+    }
+
+    public init(value: Double?) {
+        self.value = value
+    }
+}
+
+extension PixelSize: Equatable {
+    public static func == (lhs: PixelSize, rhs: PixelSize) -> Bool {
+        lhs.value == rhs.value
+    }
+}
+
+extension PixelSize: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
     }
 }

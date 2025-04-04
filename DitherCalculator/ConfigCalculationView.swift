@@ -14,7 +14,7 @@ import SwiftUI
 public final class ConfigCalculationViewModel {
     public var config = Config(
         guidingFocalLength: FocalLength(value: nil),
-        guidingPixelSize: nil,
+        guidingPixelSize: PixelSize(value: nil),
         imagingFocalLength: FocalLength(value: nil),
         imagingPixelSize: nil,
         maxPixelShift: nil,
@@ -67,7 +67,7 @@ struct ConfigCalculationView: View {
                     onHeaderTap: { viewModel.selectedComponent = .guidingFocalLength }
                 )
                 PixelSizeFormRow(
-                    value: $viewModel.config._guidingPixelSize,
+                    value: $viewModel.config.guidingPixelSize.value,
                     onHeaderTap: { viewModel.selectedComponent = .guidingPixelSize }
                 )
             } header: {

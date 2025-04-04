@@ -15,7 +15,7 @@ struct DitherCalculatorTests {
     @Test func returnsDitherResult() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 200),
-            guidingPixelSize: 2.99,
+            guidingPixelSize: PixelSize(value: 2.99),
             imagingFocalLength: FocalLength(value: 382),
             imagingPixelSize: 3.76,
             maxPixelShift: 10,
@@ -65,7 +65,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilImagingFocalLength() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: nil),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -85,7 +85,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilImagingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: nil,
             maxPixelShift: 1,
@@ -105,7 +105,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilGuidingFocalLength() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: nil),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -125,7 +125,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilGuidingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: nil,
+            guidingPixelSize: PixelSize(value: nil),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -145,7 +145,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilMaxPixelShift() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: nil,
@@ -165,7 +165,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNilScale() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -185,7 +185,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForInfiniteImagingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: .infinity,
             maxPixelShift: 1,
@@ -205,7 +205,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForInfiniteGuidingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: .infinity,
+            guidingPixelSize: PixelSize(value: .infinity),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -225,7 +225,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForInfiniteScale() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -245,7 +245,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNaNImagingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: .nan,
             maxPixelShift: 1,
@@ -265,7 +265,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNaNGuidingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: .nan,
+            guidingPixelSize: PixelSize(value: .nan),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -285,7 +285,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForNaNScale() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -305,7 +305,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroImagingFocalLength() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 0),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -325,7 +325,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroImagingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 0,
             maxPixelShift: 1,
@@ -345,7 +345,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroGuidingFocalLength() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 0),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -365,7 +365,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroGuidingPixelSize() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 0,
+            guidingPixelSize: PixelSize(value: 0),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
@@ -385,7 +385,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroMaxPixelShift() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 0,
@@ -405,7 +405,7 @@ struct DitherCalculatorTests {
     @Test func throwErrorForZeroScale() throws {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
-            guidingPixelSize: 1,
+            guidingPixelSize: PixelSize(value: 1),
             imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
