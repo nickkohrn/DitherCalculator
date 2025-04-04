@@ -24,22 +24,17 @@ public final class Config {
     public var guidingFocalLength = FocalLength(value: nil)
     public var guidingPixelSize = PixelSize(value: nil)
     public var imagingFocalLength = FocalLength(value: nil)
-    public var _imagingPixelSize: Double?
+    public var imagingPixelSize = PixelSize(value: nil)
     public var maxPixelShift: Int?
     public var name: String?
     public let recordID: CKRecord.ID
     public var scale: Double?
 
-    public var imagingPixelSize: PixelSize? {
-        guard let _imagingPixelSize else { return nil }
-        return PixelSize(value: _imagingPixelSize)
-    }
-
     public init(
         guidingFocalLength: FocalLength,
         guidingPixelSize: PixelSize,
         imagingFocalLength: FocalLength,
-        imagingPixelSize: Double?,
+        imagingPixelSize: PixelSize,
         maxPixelShift: Int?,
         name: String?,
         recordID: CKRecord.ID,
@@ -48,7 +43,7 @@ public final class Config {
         self.guidingFocalLength = guidingFocalLength
         self.guidingPixelSize = guidingPixelSize
         self.imagingFocalLength = imagingFocalLength
-        self._imagingPixelSize = imagingPixelSize
+        self.imagingPixelSize = imagingPixelSize
         self.maxPixelShift = maxPixelShift
         self.name = name
         self.recordID = recordID
@@ -66,7 +61,7 @@ extension Config {
             guidingFocalLength: FocalLength(value: record[Config.Key.guidingFocalLength.rawValue] as? Int),
             guidingPixelSize: PixelSize(value: record[Config.Key.guidingPixelSize.rawValue] as? Double),
             imagingFocalLength: FocalLength(value: record[Config.Key.imagingFocalLength.rawValue] as? Int),
-            imagingPixelSize: record[Config.Key.imagingPixelSize.rawValue] as? Double,
+            imagingPixelSize: PixelSize(value: record[Config.Key.imagingPixelSize.rawValue] as? Double),
             maxPixelShift: record[Config.Key.maxPixelShift.rawValue] as? Int,
             name: record[Config.Key.name.rawValue] as? String,
             recordID: record.recordID,
@@ -79,7 +74,7 @@ extension Config {
         record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength.value
         record[Config.Key.guidingPixelSize.rawValue] = guidingPixelSize.value
         record[Config.Key.imagingFocalLength.rawValue] = imagingFocalLength.value
-        record[Config.Key.imagingPixelSize.rawValue] = _imagingPixelSize
+        record[Config.Key.imagingPixelSize.rawValue] = imagingPixelSize.value
         record[Config.Key.maxPixelShift.rawValue] = maxPixelShift
         record[Config.Key.name.rawValue] = name
         record[Config.Key.scale.rawValue] = scale
@@ -92,7 +87,7 @@ extension Config {
         guidingFocalLength = FocalLength(value: config.guidingFocalLength.value)
         guidingPixelSize = PixelSize(value: config.guidingPixelSize.value)
         imagingFocalLength = FocalLength(value: config.imagingFocalLength.value)
-        _imagingPixelSize = config._imagingPixelSize
+        imagingPixelSize = PixelSize(value: config.imagingPixelSize.value)
         maxPixelShift = config.maxPixelShift
         name = config.name
         scale = config.scale

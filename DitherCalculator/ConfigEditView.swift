@@ -38,7 +38,7 @@ final class ConfigEditViewModel {
         return guidingFocalLength == existingConfig.guidingFocalLength.value
         && guidingPixelSize == existingConfig.guidingPixelSize.measurement.value
         && imagingFocalLength == existingConfig.imagingFocalLength.value
-        && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
+        && imagingPixelSize == existingConfig.imagingPixelSize.measurement.value
         && maxPixelShift == existingConfig.maxPixelShift
         && scale == existingConfig.scale
         && (trimmedName.isEmpty || trimmedName == existingConfig.name?.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -55,7 +55,7 @@ final class ConfigEditViewModel {
         guidingFocalLength = config.guidingFocalLength.value
         guidingPixelSize = config.guidingPixelSize.measurement.value
         imagingFocalLength = config.imagingFocalLength.value
-        imagingPixelSize = config.imagingPixelSize?.measurement.value
+        imagingPixelSize = config.imagingPixelSize.measurement.value
         maxPixelShift = config.maxPixelShift
         name = config.name ?? ""
         scale = config.scale
@@ -211,7 +211,7 @@ struct ConfigEditView: View {
                     guidingFocalLength: FocalLength(value: 200),
                     guidingPixelSize: PixelSize(value: 2.99),
                     imagingFocalLength: FocalLength(value: 382),
-                    imagingPixelSize: 3.76,
+                    imagingPixelSize: PixelSize(value: 3.76),
                     maxPixelShift: 10,
                     name: "Starfront Rig",
                     recordID: CKRecord.ID(recordName: UUID().uuidString),

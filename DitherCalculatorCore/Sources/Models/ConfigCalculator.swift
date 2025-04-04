@@ -69,7 +69,7 @@ public struct ConfigCalculator {
         guard let imagingFocalLength = config.imagingFocalLength.value else {
             throw Error.invalidValue(parameter: Component.imagingFocalLength.title)
         }
-        guard let imagingPixelSize = config.imagingPixelSize else {
+        guard let imagingPixelSize = config.imagingPixelSize.value else {
             throw Error.invalidValue(parameter: Component.imagingPixelSize.title)
         }
         guard let guidingFocalLength = config.guidingFocalLength.value else {
@@ -89,7 +89,7 @@ public struct ConfigCalculator {
             (Component.guidingFocalLength.title, Double(guidingFocalLength)),
             (Component.guidingPixelSize.title, guidingPixelSize),
             (Component.imagingFocalLength.title, Double(imagingFocalLength)),
-            (Component.imagingPixelSize.title, imagingPixelSize.measurement.value),
+            (Component.imagingPixelSize.title, imagingPixelSize),
             (Component.pixelShift.title, Double(maxPixelShift)),
             (Component.scale.title, scale)
         ]
@@ -102,7 +102,7 @@ public struct ConfigCalculator {
         }
 
         // Calculate imaging and guiding scales in arcsec per pixel.
-        let imagingScale = (arcsecondsPerRadian * imagingPixelSize.measurement.value) / Double(imagingFocalLength)
+        let imagingScale = (arcsecondsPerRadian * imagingPixelSize) / Double(imagingFocalLength)
         let guidingScale = (arcsecondsPerRadian * guidingPixelSize) / Double(guidingFocalLength)
 
         // Determine the desired angular shift (in arcseconds) for the imaging camera.

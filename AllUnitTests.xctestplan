@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "FBE6C76A-890B-44A3-B48F-6679B07A79E4",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:DitherCalculatorCore",
+        "identifier" : "ModelsTests",
+        "name" : "ModelsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DitherCalculatorCore",
+        "identifier" : "FoundationExtensionsTests",
+        "name" : "FoundationExtensionsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

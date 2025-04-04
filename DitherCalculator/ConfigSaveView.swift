@@ -63,7 +63,7 @@ struct ConfigSaveView: View {
             }
             Section {
                 LabeledFocalLengthRow(value: config.imagingFocalLength.measurement)
-                LabeledPixelSizeRow(value: config.imagingPixelSize?.measurement)
+                LabeledPixelSizeRow(value: config.imagingPixelSize.measurement)
             } header: {
                 ImagingSectionHeader()
             }
@@ -113,7 +113,7 @@ struct ConfigSaveView: View {
                     guidingFocalLength: FocalLength(value: 200),
                     guidingPixelSize: PixelSize(value: 2.99),
                     imagingFocalLength: FocalLength(value: 382),
-                    imagingPixelSize: 3.76,
+                    imagingPixelSize: PixelSize(value: 3.76),
                     maxPixelShift: 10,
                     name: "Starfront Rig",
                     recordID: CKRecord.ID(recordName: UUID().uuidString),

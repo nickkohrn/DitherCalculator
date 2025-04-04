@@ -14,7 +14,7 @@ public final class FocalLength {
     public var value: Int?
 
     public var measurement: Measurement<UnitLength> {
-        guard let value else { return Measurement(value: 0, unit: Self.unit)}
+        guard let value else { return Measurement(value: 0, unit: Self.unit) }
         return Measurement(value: Double(value), unit: Self.unit)
     }
 

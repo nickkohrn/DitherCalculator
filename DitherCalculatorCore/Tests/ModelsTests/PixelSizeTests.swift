@@ -16,4 +16,9 @@ struct PixelSizeTests {
         #expect(sut.measurement == Measurement<UnitLength>(value: 3.76, unit: .micrometers))
     }
 
+    @Test func pixelSizeInitCreatesExpectedMeasurementWhenValueNil() async throws {
+        let sut = PixelSize(value: nil)
+        #expect(sut.measurement == Measurement<UnitLength>(value: 0, unit: .micrometers))
+    }
+
 }

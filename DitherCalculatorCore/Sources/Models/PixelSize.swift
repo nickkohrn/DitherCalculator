@@ -14,7 +14,7 @@ public final class PixelSize {
     public var value: Double?
 
     public var measurement: Measurement<UnitLength> {
-        guard let value else { return Measurement(value: 0, unit: Self.unit)}
+        guard let value else { return Measurement(value: 0, unit: Self.unit) }
         return Measurement(value: value, unit: Self.unit)
     }
 

@@ -11,9 +11,14 @@ import Testing
 
 struct FocalLengthTests {
 
-    @Test func focalLengthInitCreatesExpectedMeasurement() async throws {
+    @Test func focalLengthInitCreatesExpectedMeasurementWhenValueNotNil() async throws {
         let sut = FocalLength(value: 382)
         #expect(sut.measurement == Measurement<UnitLength>(value: 382, unit: .millimeters))
+    }
+
+    @Test func focalLengthInitCreatesExpectedMeasurementWhenValueNil() async throws {
+        let sut = FocalLength(value: nil)
+        #expect(sut.measurement == Measurement<UnitLength>(value: 0, unit: .millimeters))
     }
 
 }

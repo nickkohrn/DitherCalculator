@@ -16,7 +16,7 @@ public final class ConfigCalculationViewModel {
         guidingFocalLength: FocalLength(value: nil),
         guidingPixelSize: PixelSize(value: nil),
         imagingFocalLength: FocalLength(value: nil),
-        imagingPixelSize: nil,
+        imagingPixelSize: PixelSize(value: nil),
         maxPixelShift: nil,
         name: nil,
         recordID: CKRecord.ID(recordName: UUID().uuidString),
@@ -55,7 +55,7 @@ struct ConfigCalculationView: View {
                     onHeaderTap: { viewModel.selectedComponent = .imagingFocalLength }
                 )
                 PixelSizeFormRow(
-                    value: $viewModel.config._imagingPixelSize,
+                    value: $viewModel.config.imagingPixelSize.value,
                     onHeaderTap: { viewModel.selectedComponent = .imagingPixelSize }
                 )
             } header: {
