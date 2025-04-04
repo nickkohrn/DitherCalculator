@@ -16,7 +16,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
-            imagingFocalLength: 382,
+            imagingFocalLength: FocalLength(value: 382),
             imagingPixelSize: 3.76,
             maxPixelShift: 10,
             name: "",
@@ -66,7 +66,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: nil,
+            imagingFocalLength: FocalLength(value: nil),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -86,7 +86,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: nil,
             maxPixelShift: 1,
             name: "",
@@ -106,7 +106,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: nil),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -126,7 +126,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: nil,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -146,7 +146,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: nil,
             name: "",
@@ -166,7 +166,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -186,7 +186,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: .infinity,
             maxPixelShift: 1,
             name: "",
@@ -206,7 +206,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: .infinity,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -226,7 +226,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -246,7 +246,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: .nan,
             maxPixelShift: 1,
             name: "",
@@ -266,7 +266,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: .nan,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -286,7 +286,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -306,7 +306,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 0,
+            imagingFocalLength: FocalLength(value: 0),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -326,7 +326,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 0,
             maxPixelShift: 1,
             name: "",
@@ -346,7 +346,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 0),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -366,7 +366,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 0,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",
@@ -386,7 +386,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 0,
             name: "",
@@ -406,7 +406,7 @@ struct DitherCalculatorTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 1),
             guidingPixelSize: 1,
-            imagingFocalLength: 1,
+            imagingFocalLength: FocalLength(value: 1),
             imagingPixelSize: 1,
             maxPixelShift: 1,
             name: "",

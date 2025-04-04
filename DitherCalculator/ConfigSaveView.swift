@@ -62,7 +62,7 @@ struct ConfigSaveView: View {
                 NameFormRow(value: $viewModel.name)
             }
             Section {
-                LabeledFocalLengthRow(value: config.imagingFocalLength?.measurement)
+                LabeledFocalLengthRow(value: config.imagingFocalLength.measurement)
                 LabeledPixelSizeRow(value: config.imagingPixelSize?.measurement)
             } header: {
                 ImagingSectionHeader()
@@ -112,7 +112,7 @@ struct ConfigSaveView: View {
                 Config(
                     guidingFocalLength: FocalLength(value: 200),
                     guidingPixelSize: 2.99,
-                    imagingFocalLength: 382,
+                    imagingFocalLength: FocalLength(value: 382),
                     imagingPixelSize: 3.76,
                     maxPixelShift: 10,
                     name: "Starfront Rig",

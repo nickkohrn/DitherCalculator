@@ -15,7 +15,7 @@ public final class ConfigCalculationViewModel {
     public var config = Config(
         guidingFocalLength: FocalLength(value: nil),
         guidingPixelSize: nil,
-        imagingFocalLength: nil,
+        imagingFocalLength: FocalLength(value: nil),
         imagingPixelSize: nil,
         maxPixelShift: nil,
         name: nil,
@@ -51,7 +51,7 @@ struct ConfigCalculationView: View {
         Form {
             Section {
                 FocalLengthFormRow(
-                    value: $viewModel.config._imagingFocalLength,
+                    value: $viewModel.config.imagingFocalLength.value,
                     onHeaderTap: { viewModel.selectedComponent = .imagingFocalLength }
                 )
                 PixelSizeFormRow(

@@ -37,7 +37,7 @@ final class ConfigEditViewModel {
         }
         return guidingFocalLength == existingConfig.guidingFocalLength.value
         && guidingPixelSize == existingConfig.guidingPixelSize?.measurement.value
-        && imagingFocalLength == existingConfig._imagingFocalLength
+        && imagingFocalLength == existingConfig.imagingFocalLength.value
         && imagingPixelSize == existingConfig.imagingPixelSize?.measurement.value
         && maxPixelShift == existingConfig.maxPixelShift
         && scale == existingConfig.scale
@@ -54,7 +54,7 @@ final class ConfigEditViewModel {
         _existingConfig = config
         guidingFocalLength = config.guidingFocalLength.value
         guidingPixelSize = config.guidingPixelSize?.measurement.value
-        imagingFocalLength = config._imagingFocalLength
+        imagingFocalLength = config.imagingFocalLength.value
         imagingPixelSize = config.imagingPixelSize?.measurement.value
         maxPixelShift = config.maxPixelShift
         name = config.name ?? ""
@@ -210,7 +210,7 @@ struct ConfigEditView: View {
                 Config(
                     guidingFocalLength: FocalLength(value: 200),
                     guidingPixelSize: 2.99,
-                    imagingFocalLength: 382,
+                    imagingFocalLength: FocalLength(value: 382),
                     imagingPixelSize: 3.76,
                     maxPixelShift: 10,
                     name: "Starfront Rig",

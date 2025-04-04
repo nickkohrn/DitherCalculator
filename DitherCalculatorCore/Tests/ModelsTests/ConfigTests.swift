@@ -16,7 +16,7 @@ struct ConfigTests {
         let sut = Config(
             guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
-            imagingFocalLength: 382,
+            imagingFocalLength: FocalLength(value: 382),
             imagingPixelSize: 3.76,
             maxPixelShift: nil,
             name: nil,
@@ -63,7 +63,7 @@ struct ConfigTests {
         let config = Config(
             guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
-            imagingFocalLength: 382,
+            imagingFocalLength: FocalLength(value: 382),
             imagingPixelSize: 3.76,
             maxPixelShift: 10,
             name: "Test",
@@ -96,7 +96,7 @@ struct ConfigTests {
         let sut = Config(
             guidingFocalLength: FocalLength(value: 100),
             guidingPixelSize: 2.5,
-            imagingFocalLength: 300,
+            imagingFocalLength: FocalLength(value: 300),
             imagingPixelSize: 3.2,
             maxPixelShift: 5,
             name: "Original",
@@ -107,7 +107,7 @@ struct ConfigTests {
         let updated = Config(
             guidingFocalLength: FocalLength(value: 200),
             guidingPixelSize: 2.99,
-            imagingFocalLength: 382,
+            imagingFocalLength: FocalLength(value: 382),
             imagingPixelSize: 3.76,
             maxPixelShift: 10,
             name: "Updated",
