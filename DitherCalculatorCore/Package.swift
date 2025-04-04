@@ -7,8 +7,8 @@ let package = Package(
     platforms: [.iOS(.v18)],
     products: [
         .library(
-            name: "DitherCalculatorCore",
-            targets: ["DitherCalculatorCore"]),
+            name: "CoreUI",
+            targets: ["CoreUI"]),
         .library(
             name: "FoundationExtensions",
             targets: ["FoundationExtensions"]),
@@ -21,10 +21,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "DitherCalculatorCore"),
-        .testTarget(
-            name: "DitherCalculatorCoreTests",
-            dependencies: ["DitherCalculatorCore"]),
+            name: "CoreUI"),
         .target(
             name: "FoundationExtensions"),
         .testTarget(

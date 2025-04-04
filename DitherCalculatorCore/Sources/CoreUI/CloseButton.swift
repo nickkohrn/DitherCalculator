@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct CloseButton: UIViewRepresentable {
+public struct CloseButton: UIViewRepresentable {
     private let action: () -> Void
 
-    init(action: @escaping () -> Void) {
+    public init(action: @escaping () -> Void) {
         self.action = action
     }
 
-    func makeUIView(context: Context) -> UIButton {
+    public func makeUIView(context: Context) -> UIButton {
         let button = UIButton(type: .close)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -24,22 +24,22 @@ struct CloseButton: UIViewRepresentable {
         return button
     }
 
-    func updateUIView(_ uiView: UIButton, context: Context) {
+    public func updateUIView(_ uiView: UIButton, context: Context) {
         context.coordinator.action = action
     }
 
-    func makeCoordinator() -> Coordinator {
+    public func makeCoordinator() -> Coordinator {
         Coordinator(action: action)
     }
 
-    class Coordinator {
-        var action: () -> Void
+    public class Coordinator {
+        internal var action: () -> Void
 
-        init(action: @escaping () -> Void) {
+        internal init(action: @escaping () -> Void) {
             self.action = action
         }
 
-        @objc func perform() {
+        @objc internal func perform() {
             action()
         }
     }

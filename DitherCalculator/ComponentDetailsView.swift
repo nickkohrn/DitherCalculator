@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/26/25.
 //
 
+import CoreUI
 import Foundation
 import Models
 import SwiftUI
@@ -36,9 +37,7 @@ public struct ComponentDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                CloseButton {
-                    dismiss()
-                }
+                CloseButton { dismiss() }
             }
         }
     }

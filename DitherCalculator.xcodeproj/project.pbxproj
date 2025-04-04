@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		F9836BE72D9EBBFA0028E812 /* DitherCalculatorCore in Resources */ = {isa = PBXBuildFile; fileRef = F9836BE62D9EBBFA0028E812 /* DitherCalculatorCore */; };
-		F9C34D772D9EBE1200580EF4 /* DitherCalculatorCore in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34D762D9EBE1200580EF4 /* DitherCalculatorCore */; };
 		F9C34D792D9EBE2100580EF4 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34D782D9EBE2100580EF4 /* Models */; };
 		F9C34DD72D9F6DA600580EF4 /* FoundationExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DD62D9F6DA600580EF4 /* FoundationExtensions */; };
+		F9C34DD92D9F7E0900580EF4 /* CoreUI in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DD82D9F7E0900580EF4 /* CoreUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,8 +61,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F9C34D792D9EBE2100580EF4 /* Models in Frameworks */,
+				F9C34DD92D9F7E0900580EF4 /* CoreUI in Frameworks */,
 				F9C34DD72D9F6DA600580EF4 /* FoundationExtensions in Frameworks */,
-				F9C34D772D9EBE1200580EF4 /* DitherCalculatorCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,9 +132,9 @@
 			);
 			name = DitherCalculator;
 			packageProductDependencies = (
-				F9C34D762D9EBE1200580EF4 /* DitherCalculatorCore */,
 				F9C34D782D9EBE2100580EF4 /* Models */,
 				F9C34DD62D9F6DA600580EF4 /* FoundationExtensions */,
+				F9C34DD82D9F7E0900580EF4 /* CoreUI */,
 			);
 			productName = DitherCalculator;
 			productReference = F9D35DAB2D8F9BEA0037E397 /* DitherCalculator.app */;
@@ -594,10 +594,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F9C34D762D9EBE1200580EF4 /* DitherCalculatorCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DitherCalculatorCore;
-		};
 		F9C34D782D9EBE2100580EF4 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Models;
@@ -605,6 +601,10 @@
 		F9C34DD62D9F6DA600580EF4 /* FoundationExtensions */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FoundationExtensions;
+		};
+		F9C34DD82D9F7E0900580EF4 /* CoreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
