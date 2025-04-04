@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct UntitledPlaceholderView: View {
-    var body: some View {
+public struct UntitledPlaceholderView: View {
+    public init() {}
+
+    public var body: some View {
         Text("Untitled")
     }
 }

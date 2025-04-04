@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct ControlSectionHeader: View {
-    var body: some View {
+public struct ControlSectionHeader: View {
+    public init() {}
+
+    public var body: some View {
         Label("Control", systemImage: "desktopcomputer")
     }
 }

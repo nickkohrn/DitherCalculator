@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct GuidingSectionHeader: View {
+    public init() {}
+    
     public var body: some View {
         Label("Guiding", systemImage: "dot.scope")
     }

@@ -11,8 +11,9 @@ import Models
 import Observation
 import SwiftUI
 
-@MainActor @Observable
-final class ConfigSaveViewModel {
+@MainActor
+@Observable
+public final class ConfigSaveViewModel {
     public var isSaving = false
     public var name = ""
     public var shouldDismiss = false
@@ -29,9 +30,9 @@ final class ConfigSaveViewModel {
         try? ConfigCalculator.result(for: config)
     }
 
-    init() {}
+    public init() {}
 
-    func tappedSaveButton(for config: Config) {
+    public func tappedSaveButton(for config: Config) {
         isSaving = true
         config.name = trimmedName.isEmpty ? nil : trimmedName
         let record = config.newCKRecord()
@@ -51,12 +52,12 @@ final class ConfigSaveViewModel {
     }
 }
 
-struct ConfigSaveView: View {
+public struct ConfigSaveView: View {
     @Environment(Config.self) private var config
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = ConfigSaveViewModel()
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section {
                 NameFormRow(value: $viewModel.name)
