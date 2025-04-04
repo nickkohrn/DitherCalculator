@@ -1,5 +1,5 @@
 //
-//  CloudKitService.swift
+//  CloudService.swift
 //  DitherCalculatorCore
 //
 //  Created by Nick Kohrn on 4/3/25.
@@ -9,13 +9,13 @@ import CloudKit
 import Foundation
 import Models
 
-public final class CloudKitService: SyncService {
-    private let container: CKContainer
-    private let database: CKDatabase
+public final class CloudService: SyncService {
+    private let container: any CloudContainer
+    private let database: any CloudDatabase
 
-    public init() {
-        container = CKContainer.default()
-        database = container.privateCloudDatabase
+    public init(container: any CloudContainer, database: any CloudDatabase) {
+        self.container = container
+        self.database = database
     }
 
     public func accountStatus() async throws -> CKAccountStatus {
@@ -33,7 +33,12 @@ public final class CloudKitService: SyncService {
             predicate: predicate
         )
         query.sortDescriptors = [NSSortDescriptor(key: Config.Key.name.rawValue, ascending: true)]
-        let result = try await database.records(matching: query)
+        let result = try await database.records(
+            matching: query,
+            inZoneWith: nil,
+            desiredKeys: nil,
+            resultsLimit: CKQueryOperation.maximumResults
+        )
         let records = result.matchResults.compactMap { try? $0.1.get() }
         return records.compactMap(Config.init)
     }
@@ -43,6 +48,6 @@ public final class CloudKitService: SyncService {
     }
 
     public func save(_ record: CKRecord) async throws {
-        try await database.save(record)
+        _ = try await database.save(record)
     }
 }
