@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Models
 import SwiftUI
 
 @MainActor @Observable

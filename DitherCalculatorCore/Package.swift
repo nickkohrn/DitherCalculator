@@ -28,7 +28,8 @@ let package = Package(
             name: "FoundationExtensionsTests",
             dependencies: ["FoundationExtensions"]),
         .target(
-            name: "Models"),
+            name: "Models",
+            dependencies: ["FoundationExtensions"]),
         .testTarget(
             name: "ModelsTests",
             dependencies: ["Models"]),
