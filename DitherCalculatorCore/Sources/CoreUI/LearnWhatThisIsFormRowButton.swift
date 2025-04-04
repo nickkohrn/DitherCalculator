@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct LearnWhatThisIsFormRowButton<Label: View>: View {
-    let action: () -> Void
-    let label: () -> Label
+public struct LearnWhatThisIsFormRowButton<Label: View>: View {
+    private let action: () -> Void
+    private let label: () -> Label
 
-    init(
+    public init(
         action: @escaping () -> Void,
         @ViewBuilder label: @escaping () -> Label
     ) {
@@ -19,7 +19,7 @@ struct LearnWhatThisIsFormRowButton<Label: View>: View {
         self.label = label
     }
 
-    var body: some View {
+    public var body: some View {
         Button(action: action) {
             label()
                 .foregroundStyle(Color.accentColor)

@@ -5,21 +5,25 @@
 //  Created by Nick Kohrn on 4/1/25.
 //
 
-import CoreUI
 import SwiftUI
 
-struct MaxPixelShiftFormRow: View {
-    @Binding var value: Int?
-    let onHeaderTap: () -> Void
+public struct MaxPixelShiftFormRow: View {
+    @Binding private var value: Int?
+    private let onHeaderTap: () -> Void
 
-    var body: some View {
+    public init(value: Binding<Int?>, onHeaderTap: @escaping () -> Void) {
+        self._value = value
+        self.onHeaderTap = onHeaderTap
+    }
+
+    public var body: some View {
         VStack(alignment: .leading) {
             LearnWhatThisIsFormRowButton {
                 onHeaderTap()
             } label: {
                 MaxPixelShiftRowHeader()
             }
-            .maxShiftInPixelsAccessibilityLabel()
+            .maxPixelShiftAccessibilityLabel()
             TextField(0.formatted(), value: $value, format: .number)
                 .keyboardType(.numberPad)
         }

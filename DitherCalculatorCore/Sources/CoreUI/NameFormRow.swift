@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-struct NameFormRow: View {
-    @Binding var value: String
+public struct NameFormRow: View {
+    @Binding private var value: String
 
-    var body: some View {
+    public init(value: Binding<String>) {
+        self._value = value
+    }
+
+    public var body: some View {
         TextField("Name", text: $value)
             .autocapitalization(.words)
             .accessibilityLabel("Configuration Name")

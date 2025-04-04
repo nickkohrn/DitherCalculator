@@ -5,14 +5,18 @@
 //  Created by Nick Kohrn on 4/1/25.
 //
 
-import CoreUI
 import SwiftUI
 
-struct PixelSizeFormRow: View {
-    @Binding var value: Double?
-    let onHeaderTap: () -> Void
+public struct PixelSizeFormRow: View {
+    @Binding private var value: Double?
+    private let onHeaderTap: () -> Void
 
-    var body: some View {
+    public init(value: Binding<Double?>, onHeaderTap: @escaping () -> Void) {
+        self._value = value
+        self.onHeaderTap = onHeaderTap
+    }
+
+    public var body: some View {
         VStack(alignment: .leading) {
             LearnWhatThisIsFormRowButton {
                 onHeaderTap()

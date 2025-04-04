@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-public struct MaxShiftInPixelsAccessibilityLabel: ViewModifier {
+public struct MaxPixelShiftAccessibilityLabel: ViewModifier {
     public func body(content: Content) -> some View {
         content.accessibilityLabel("Maximum shift in pixels")
     }
 }
 
 extension View {
-    public func maxShiftInPixelsAccessibilityLabel() -> some View {
-        self.modifier(MaxShiftInPixelsAccessibilityLabel())
+    public func maxPixelShiftAccessibilityLabel() -> some View {
+        self.modifier(MaxPixelShiftAccessibilityLabel())
     }
 }

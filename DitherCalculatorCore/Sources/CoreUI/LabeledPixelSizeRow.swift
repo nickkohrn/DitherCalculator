@@ -5,13 +5,16 @@
 //  Created by Nick Kohrn on 4/1/25.
 //
 
-import CoreUI
 import SwiftUI
 
-struct LabeledPixelSizeRow: View {
-    let value: Measurement<UnitLength>?
+public struct LabeledPixelSizeRow: View {
+    public let value: Measurement<UnitLength>?
 
-    var body: some View {
+    public init(value: Measurement<UnitLength>?) {
+        self.value = value
+    }
+
+    public var body: some View {
         LabeledContent("Pixel Size") {
             if let value {
                 Text(formatted(value: value, width: .abbreviated))

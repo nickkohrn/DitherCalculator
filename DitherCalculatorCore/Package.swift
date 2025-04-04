@@ -21,7 +21,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CoreUI"),
+            name: "CoreUI",
+            dependencies: ["Models"]),
         .target(
             name: "FoundationExtensions"),
         .testTarget(
