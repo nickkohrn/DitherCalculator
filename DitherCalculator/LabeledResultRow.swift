@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 3/31/25.
 //
 
+import Models
 import SwiftUI
 
 struct LabeledResultRow: View {

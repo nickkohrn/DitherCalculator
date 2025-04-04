@@ -10,6 +10,9 @@ let package = Package(
             name: "DitherCalculatorCore",
             targets: ["DitherCalculatorCore"]),
         .library(
+            name: "FoundationExtensions",
+            targets: ["FoundationExtensions"]),
+        .library(
             name: "Models",
             targets: ["Models"]),
     ],
@@ -18,13 +21,16 @@ let package = Package(
             name: "DitherCalculatorCore"),
         .testTarget(
             name: "DitherCalculatorCoreTests",
-            dependencies: ["DitherCalculatorCore"]
-        ),
+            dependencies: ["DitherCalculatorCore"]),
+        .target(
+            name: "FoundationExtensions"),
+        .testTarget(
+            name: "FoundationExtensionsTests",
+            dependencies: ["FoundationExtensions"]),
         .target(
             name: "Models"),
         .testTarget(
             name: "ModelsTests",
-            dependencies: ["Models"]
-        ),
+            dependencies: ["Models"]),
     ]
 )

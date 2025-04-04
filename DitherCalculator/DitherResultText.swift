@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 4/2/25.
 //
 
+import Models
 import SwiftUI
 
 struct DitherResultText: View {

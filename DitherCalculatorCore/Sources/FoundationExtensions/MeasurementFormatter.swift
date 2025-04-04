@@ -8,6 +8,7 @@
 import Foundation
 
 extension MeasurementFormatter {
+    @MainActor
     public static let longUnitFormatter: MeasurementFormatter = {
         let formatter = MeasurementFormatter()
         formatter.unitStyle = .long
