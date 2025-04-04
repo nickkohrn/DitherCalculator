@@ -16,6 +16,9 @@ let package = Package(
             name: "Models",
             targets: ["Models"]),
         .library(
+            name: "SaveConfig",
+            targets: ["SaveConfig"]),
+        .library(
             name: "Syncing",
             targets: ["Syncing"]),
     ],
@@ -35,6 +38,16 @@ let package = Package(
         .testTarget(
             name: "ModelsTests",
             dependencies: ["Models"]),
+        .target(
+            name: "SaveConfig",
+            dependencies: ["CoreUI",
+                           "Models",
+                           "Syncing"],
+            path: "Sources/Features/SaveConfig"),
+        .testTarget(
+            name: "SaveConfigTests",
+            dependencies: ["SaveConfig"],
+            path: "Tests/Features/SaveConfigTests"),
         .target(
             name: "Syncing",
             dependencies: ["Models"]),

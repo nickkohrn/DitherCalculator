@@ -12,6 +12,7 @@
 		F9C34DD72D9F6DA600580EF4 /* FoundationExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DD62D9F6DA600580EF4 /* FoundationExtensions */; };
 		F9C34DD92D9F7E0900580EF4 /* CoreUI in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DD82D9F7E0900580EF4 /* CoreUI */; };
 		F9C34DDD2DA0134A00580EF4 /* Syncing in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DDC2DA0134A00580EF4 /* Syncing */; };
+		F9C34DE12DA0275000580EF4 /* SaveConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F9C34DE02DA0275000580EF4 /* SaveConfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 			files = (
 				F9C34D792D9EBE2100580EF4 /* Models in Frameworks */,
 				F9C34DD92D9F7E0900580EF4 /* CoreUI in Frameworks */,
+				F9C34DE12DA0275000580EF4 /* SaveConfig in Frameworks */,
 				F9C34DDD2DA0134A00580EF4 /* Syncing in Frameworks */,
 				F9C34DD72D9F6DA600580EF4 /* FoundationExtensions in Frameworks */,
 			);
@@ -140,6 +142,7 @@
 				F9C34DD62D9F6DA600580EF4 /* FoundationExtensions */,
 				F9C34DD82D9F7E0900580EF4 /* CoreUI */,
 				F9C34DDC2DA0134A00580EF4 /* Syncing */,
+				F9C34DE02DA0275000580EF4 /* SaveConfig */,
 			);
 			productName = DitherCalculator;
 			productReference = F9D35DAB2D8F9BEA0037E397 /* DitherCalculator.app */;
@@ -614,6 +617,10 @@
 		F9C34DDC2DA0134A00580EF4 /* Syncing */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Syncing;
+		};
+		F9C34DE02DA0275000580EF4 /* SaveConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SaveConfig;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

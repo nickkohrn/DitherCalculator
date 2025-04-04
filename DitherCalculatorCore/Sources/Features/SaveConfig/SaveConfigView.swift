@@ -1,61 +1,20 @@
 //
-//  ConfigDetailsView.swift
+//  SaveConfigView.swift
 //  DitherCalculator
 //
 //  Created by Nick Kohrn on 3/30/25.
 //
 
-import CloudKit
 import CoreUI
 import Models
-import Observation
 import SwiftUI
 
-@MainActor
-@Observable
-public final class ConfigSaveViewModel {
-    public var isSaving = false
-    public var name = ""
-    public var shouldDismiss = false
-
-    public var disableSave: Bool {
-        trimmedName.isEmpty
-    }
-
-    public var trimmedName: String {
-        name.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    public func result(for config: Config) -> DitherResult? {
-        try? ConfigCalculator.result(for: config)
-    }
-
-    public init() {}
-
-    public func tappedSaveButton(for config: Config) {
-        isSaving = true
-        config.name = trimmedName.isEmpty ? nil : trimmedName
-        let record = config.newCKRecord()
-        Task {
-            do {
-                try await CKContainer.default().privateCloudDatabase.save(record)
-                await MainActor.run {
-                    shouldDismiss = true
-                }
-            } catch {
-                print(error)
-                await MainActor.run {
-                    isSaving = false
-                }
-            }
-        }
-    }
-}
-
-public struct ConfigSaveView: View {
+public struct SaveConfigView: View {
     @Environment(Config.self) private var config
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = ConfigSaveViewModel()
+    @State private var viewModel = SaveConfigViewModel()
+
+    public init() {}
 
     public var body: some View {
         Form {
@@ -106,9 +65,12 @@ public struct ConfigSaveView: View {
     }
 }
 
+#if DEBUG
+import CloudKit
+
 #Preview {
     NavigationStack {
-        ConfigSaveView()
+        SaveConfigView()
             .environment(
                 Config(
                     guidingFocalLength: FocalLength(value: 200),
@@ -123,3 +85,4 @@ public struct ConfigSaveView: View {
             )
     }
 }
+#endif

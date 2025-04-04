@@ -9,6 +9,7 @@ import CloudKit
 import CoreUI
 import Models
 import Observation
+import SaveConfig
 import SwiftUI
 
 @MainActor @Observable
@@ -106,7 +107,7 @@ struct ConfigCalculationView: View {
         }
         .sheet(isPresented: $viewModel.isShowingSaveConfigView) {
             NavigationStack {
-                ConfigSaveView()
+                SaveConfigView()
                     .environment(viewModel.config)
             }
         }

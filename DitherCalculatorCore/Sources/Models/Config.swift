@@ -8,6 +8,8 @@
 import CloudKit
 import Observation
 
+// TODO: Change recordID from CKRecord.ID to UUID
+// This will preven the need to import CloudKit in view files for use in #Preview
 @Observable
 public final class Config {
     public enum Key: String {
