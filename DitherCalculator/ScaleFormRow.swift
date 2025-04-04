@@ -5,6 +5,7 @@
 //  Created by Nick Kohrn on 4/1/25.
 //
 
+import CoreUI
 import SwiftUI
 
 struct ScaleFormRow: View {

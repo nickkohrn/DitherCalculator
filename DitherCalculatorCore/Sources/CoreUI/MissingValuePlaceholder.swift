@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct MissingValuePlaceholder: View {
-    var body: some View {
+public struct MissingValuePlaceholder: View {
+    public init() {}
+
+    public var body: some View {
         Text("--")
             .accessibilityLabel("No Value")
     }

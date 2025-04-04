@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-struct LabeledFocalLengthRow: View {
-    let value: Measurement<UnitLength>?
+public struct LabeledFocalLengthRow: View {
+    public let value: Measurement<UnitLength>?
 
-    var body: some View {
+    public init(value: Measurement<UnitLength>?) {
+        self.value = value
+    }
+
+    public var body: some View {
         LabeledContent("Focal Length") {
             if let value {
                 Text(formatted(value: value, width: .abbreviated))

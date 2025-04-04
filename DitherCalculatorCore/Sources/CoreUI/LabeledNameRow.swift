@@ -5,13 +5,16 @@
 //  Created by Nick Kohrn on 4/1/25.
 //
 
-import CoreUI
 import SwiftUI
 
-struct LabeledNameRow: View {
-    let name: String?
+public struct LabeledNameRow: View {
+    public let name: String?
 
-    var body: some View {
+    public init(name: String?) {
+        self.name = name
+    }
+
+    public var body: some View {
         LabeledContent("Name") {
             if let name {
                 Text(name)
