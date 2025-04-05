@@ -25,16 +25,15 @@ public struct StubSyncService: SyncService {
     public init(
         accountStatus: Result<CKAccountStatus, Error>? = nil,
         delete: Result<CKRecord.ID, Error>? = nil,
-        records: Result<(
-            matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)],
-            queryCursor: CKQueryOperation.Cursor?
-        ), Error>? = nil,
-        save: Result<Void, Error>? = nil
+        save: Result<Void, Error>? = nil,
+        recordForID: Result<CKRecord, Error>? = nil,
+        records: Result<(matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)], queryCursor: CKQueryOperation.Cursor?), Error>? = nil
     ) {
         self.accountStatus = accountStatus
         self.delete = delete
-        self.records = records
         self.save = save
+        self.recordForID = recordForID
+        self.records = records
     }
 
     public func accountStatus() async throws -> CKAccountStatus {

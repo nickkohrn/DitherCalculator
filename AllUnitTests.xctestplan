@@ -15,8 +15,8 @@
     {
       "target" : {
         "containerPath" : "container:DitherCalculatorCore",
-        "identifier" : "FoundationExtensionsTests",
-        "name" : "FoundationExtensionsTests"
+        "identifier" : "EditConfigTests",
+        "name" : "EditConfigTests"
       }
     },
     {
@@ -31,6 +31,13 @@
         "containerPath" : "container:DitherCalculatorCore",
         "identifier" : "ModelsTests",
         "name" : "ModelsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DitherCalculatorCore",
+        "identifier" : "FoundationExtensionsTests",
+        "name" : "FoundationExtensionsTests"
       }
     }
   ],

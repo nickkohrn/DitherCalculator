@@ -12,6 +12,7 @@ import Syncing
 
 // TODO: Handle errors
 // TODO: Handle iCloud states
+// TODO: Handle logging
 
 @main
 struct DitherCalculatorApp: App {

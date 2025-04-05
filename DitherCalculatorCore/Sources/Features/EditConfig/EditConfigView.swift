@@ -1,110 +1,24 @@
 //
-//  ConfigEditView.swift
-//  DitherCalculator
+//  EditConfigView.swift
+//  DitherCalculatorCore
 //
-//  Created by Nick Kohrn on 3/31/25.
+//  Created by Nick Kohrn on 4/4/25.
 //
 
-import CloudKit
 import CoreUI
 import Models
-import Observation
 import SwiftUI
+import Syncing
 
-@MainActor @Observable
-final class ConfigEditViewModel {
-    private var existingConfig: Config?
-    var guidingFocalLength: Int?
-    var guidingPixelSize: Double?
-    var imagingFocalLength: Int?
-    var imagingPixelSize: Double?
-    var isSaving = false
-    var maxPixelShift: Int?
-    var name = ""
-    var scale: Double?
-    var selectedComponent: ConfigCalculator.Component?
-    var shouldDismiss = false
-
-    var disableSave: Bool {
-        guard let existingConfig,
-              let guidingFocalLength,
-              let guidingPixelSize,
-              let imagingFocalLength,
-              let imagingPixelSize,
-              let maxPixelShift,
-              let scale else {
-            return true
-        }
-        return guidingFocalLength == existingConfig.guidingFocalLength.value
-        && guidingPixelSize == existingConfig.guidingPixelSize.measurement.value
-        && imagingFocalLength == existingConfig.imagingFocalLength.value
-        && imagingPixelSize == existingConfig.imagingPixelSize.measurement.value
-        && maxPixelShift == existingConfig.maxPixelShift
-        && scale == existingConfig.scale
-        && (trimmedName.isEmpty || trimmedName == existingConfig.name?.trimmingCharacters(in: .whitespacesAndNewlines))
-    }
-
-    var trimmedName: String {
-        name.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    init() {}
-
-    func onAppear(with config: Config) {
-        _existingConfig = config
-        guidingFocalLength = config.guidingFocalLength.value
-        guidingPixelSize = config.guidingPixelSize.measurement.value
-        imagingFocalLength = config.imagingFocalLength.value
-        imagingPixelSize = config.imagingPixelSize.measurement.value
-        maxPixelShift = config.maxPixelShift
-        name = config.name ?? ""
-        scale = config.scale
-    }
-
-    public func result(for config: Config) -> DitherResult? {
-        try? ConfigCalculator.result(for: config)
-    }
-
-    func tappedSaveButton(for config: Config, onSuccess: @escaping (Config) -> Void) {
-        Task {
-            await MainActor.run {
-                isSaving = true
-            }
-            do {
-                let record = try await CKContainer.default().privateCloudDatabase.record(for: config.recordID)
-                guard record.recordType == Config.Key.type.rawValue else { return }
-                record[Config.Key.guidingFocalLength.rawValue] = guidingFocalLength
-                record[Config.Key.guidingPixelSize.rawValue] = guidingPixelSize
-                record[Config.Key.imagingFocalLength.rawValue] = imagingFocalLength
-                record[Config.Key.imagingPixelSize.rawValue] = imagingPixelSize
-                record[Config.Key.maxPixelShift.rawValue] = maxPixelShift
-                record[Config.Key.name.rawValue] = trimmedName
-                record[Config.Key.scale.rawValue] = scale
-                try await CKContainer.default().privateCloudDatabase.save(record)
-                await MainActor.run {
-                    guard let config = Config(from: record) else {
-                        print("Failed to initialize Config from CKRecord")
-                        return
-                    }
-                    onSuccess(config)
-                    shouldDismiss = true
-                }
-            } catch {
-                await MainActor.run {
-                    isSaving = false
-                    print(error)
-                }
-            }
-        }
-    }
-}
-
-struct ConfigEditView: View {
+public struct EditConfigView: View {
     @Environment(Config.self) private var config
+    @Environment(CloudService.self) private var cloudService
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = ConfigEditViewModel()
+    @State private var viewModel = EditConfigViewModel()
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         Form {
             Section {
                 NameFormRow(value: $viewModel.name)
@@ -164,8 +78,13 @@ struct ConfigEditView: View {
                     ProgressView()
                 } else {
                     SaveButton {
-                        viewModel.tappedSaveButton(for: config) { updatedConfig in
-                            config.updateWithValues(from: updatedConfig)
+                        Task {
+                            await viewModel.tappedSaveButton(
+                                for: config,
+                                syncService: cloudService
+                            ) { updatedConfig in
+                                config.updateWithValues(from: updatedConfig)
+                            }
                         }
                     }
                     .disabled(viewModel.disableSave)
@@ -177,9 +96,7 @@ struct ConfigEditView: View {
         }
         .onAppear { viewModel.onAppear(with: config) }
         .onChange(of: viewModel.shouldDismiss) { _, newValue in
-            if newValue {
-                dismiss()
-            }
+            if newValue { dismiss() }
         }
         .onChange(of: viewModel.result(for: config)) { oldValue, newValue in
             guard oldValue != newValue else { return }
@@ -203,9 +120,12 @@ struct ConfigEditView: View {
     }
 }
 
+#if DEBUG
+import CloudKit
+
 #Preview {
     NavigationStack {
-        ConfigEditView()
+        EditConfigView()
             .environment(
                 Config(
                     guidingFocalLength: FocalLength(value: 200),
@@ -220,3 +140,4 @@ struct ConfigEditView: View {
             )
     }
 }
+#endif

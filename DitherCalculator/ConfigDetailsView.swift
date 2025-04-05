@@ -7,6 +7,7 @@
 
 import CloudKit
 import CoreUI
+import EditConfig
 import Models
 import Observation
 import SwiftUI
@@ -120,7 +121,7 @@ struct ConfigDetailsView: View {
         )
         .sheet(isPresented: $viewModel.isShowingEditView) {
             NavigationStack {
-                ConfigEditView()
+                EditConfigView()
                     .environment(config)
             }
         }

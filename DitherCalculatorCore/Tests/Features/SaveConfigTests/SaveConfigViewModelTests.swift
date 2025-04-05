@@ -53,7 +53,7 @@ struct SaveConfigViewModelTests {
         #expect(sut.result(for: config) == nil)
     }
 
-    @Test func savesWithSuccess() async {
+    @Test func saveWithSuccess() async {
         let stubService = StubSyncService(save: .success(()))
 
         let config = Config(
@@ -79,7 +79,7 @@ struct SaveConfigViewModelTests {
         #expect(sut.shouldDismiss)
     }
 
-    @Test func savesWithSuccessWithNilName() async {
+    @Test func saveWithSuccessWithNilName() async {
         let stubService = StubSyncService(save: .success(()))
 
         let config = Config(
@@ -104,7 +104,7 @@ struct SaveConfigViewModelTests {
         #expect(sut.shouldDismiss)
     }
 
-    @Test func savesWithFailure() async {
+    @Test func saveWithFailure() async {
         let stubService = StubSyncService(save: .failure(NSError(domain: #function, code: #line)))
 
         let config = Config(
