@@ -14,22 +14,27 @@ import Testing
 public struct StubSyncService: SyncService {
     public var accountStatus: Result<CKAccountStatus, Error>?
     public var delete: Result<CKRecord.ID, Error>?
-    public var recordForID: Result<CKRecord, Error>?
     public var save: Result<Void, Error>?
-    public var fetchDitherConfigsResult: Result<[Config], Error>?
+    public var recordForID: Result<CKRecord, Error>?
+
+    public var records: Result<(
+        matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)],
+        queryCursor: CKQueryOperation.Cursor?
+    ), Error>?
 
     public init(
         accountStatus: Result<CKAccountStatus, Error>? = nil,
         delete: Result<CKRecord.ID, Error>? = nil,
-        recordForID: Result<CKRecord, Error>? = nil,
-        save: Result<Void, Error>? = nil,
-        fetchDitherConfigsResult: Result<[Config], Error>? = nil
+        records: Result<(
+            matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)],
+            queryCursor: CKQueryOperation.Cursor?
+        ), Error>? = nil,
+        save: Result<Void, Error>? = nil
     ) {
         self.accountStatus = accountStatus
         self.delete = delete
-        self.recordForID = recordForID
+        self.records = records
         self.save = save
-        self.fetchDitherConfigsResult = fetchDitherConfigsResult
     }
 
     public func accountStatus() async throws -> CKAccountStatus {
@@ -58,16 +63,24 @@ public struct StubSyncService: SyncService {
         }
     }
 
-    public func fetchConfigs() async throws -> [Config] {
-        guard let fetchDitherConfigsResult else {
-            Issue.record("Expected fetchConfigs")
-            return []
+    public func records(
+        matching query: CKQuery,
+        inZoneWith zoneID: CKRecordZone.ID?,
+        desiredKeys: [CKRecord.FieldKey]?,
+        resultsLimit: Int
+    ) async throws -> (
+        matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)],
+        queryCursor: CKQueryOperation.Cursor?
+    ) {
+        guard let records else {
+            Issue.record("Expected records")
+            return ([], nil)
         }
-        switch fetchDitherConfigsResult {
-            case .failure(let error):
+        switch records {
+        case .success(let success):
+            return success
+        case .failure(let error):
             throw error
-        case .success(let configs):
-            return configs
         }
     }
 
@@ -84,14 +97,14 @@ public struct StubSyncService: SyncService {
         }
     }
 
-    public func save(_ record: CKRecord) async throws {
+    public func save(_ record: CKRecord) async throws -> CKRecord {
         guard let save else {
             Issue.record("Expected save")
             throw NSError(domain: String(describing: Self.self), code: #line, userInfo: nil)
         }
         switch save {
         case .success:
-            return
+            return record
         case .failure(let error):
             throw error
         }

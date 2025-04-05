@@ -41,7 +41,7 @@ public final class CloudService: SyncService {
         try await database.record(for: recordID)
     }
 
-    public func save(_ record: CKRecord) async throws {
-        _ = try await database.save(record)
+    public func save(_ record: CKRecord) async throws -> CKRecord {
+        try await database.save(record)
     }
 }

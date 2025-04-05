@@ -31,21 +31,22 @@ public final class SaveConfigViewModel {
 
     public init() {}
 
-    public func tappedSaveButton(for config: Config) {
+    public func tappedSaveButton(
+        for config: Config,
+        syncService: any SyncService
+    ) async {
         isSaving = true
         config.name = trimmedName.isEmpty ? nil : trimmedName
         let record = config.newCKRecord()
-        Task {
-            do {
-                try await CKContainer.default().privateCloudDatabase.save(record)
-                await MainActor.run {
-                    shouldDismiss = true
-                }
-            } catch {
-                print(error)
-                await MainActor.run {
-                    isSaving = false
-                }
+        do {
+            _ = try await syncService.save(record)
+            await MainActor.run {
+                shouldDismiss = true
+            }
+        } catch {
+            print(error)
+            await MainActor.run {
+                isSaving = false
             }
         }
     }

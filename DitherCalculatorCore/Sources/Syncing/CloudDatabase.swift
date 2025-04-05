@@ -8,7 +8,7 @@
 import CloudKit
 import Foundation
 
-public protocol CloudDatabase {
+public protocol CloudDatabase: Sendable {
     func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID
     func record(for recordID: CKRecord.ID) async throws -> CKRecord
     func save(_ record: CKRecord) async throws -> CKRecord

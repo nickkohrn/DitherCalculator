@@ -8,7 +8,7 @@
 import CloudKit
 import Foundation
 
-public protocol CloudContainer {
+public protocol CloudContainer: Sendable {
     var privateDatabase: any CloudDatabase { get }
     func accountStatus() async throws -> CKAccountStatus
 }

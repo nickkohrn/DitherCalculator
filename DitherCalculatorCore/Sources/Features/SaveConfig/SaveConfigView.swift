@@ -8,9 +8,11 @@
 import CoreUI
 import Models
 import SwiftUI
+import Syncing
 
 public struct SaveConfigView: View {
     @Environment(Config.self) private var config
+    @Environment(CloudService.self) private var cloudService
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = SaveConfigViewModel()
 
@@ -53,8 +55,15 @@ public struct SaveConfigView: View {
                 if viewModel.isSaving {
                     ProgressView()
                 } else {
-                    SaveButton { viewModel.tappedSaveButton(for: config) }
-                        .disabled(viewModel.disableSave)
+                    SaveButton {
+                        Task {
+                            await viewModel.tappedSaveButton(
+                                for: config,
+                                syncService: cloudService
+                            )
+                        }
+                    }
+                    .disabled(viewModel.disableSave)
                 }
             }
         }

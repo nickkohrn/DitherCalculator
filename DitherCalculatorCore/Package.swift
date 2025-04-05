@@ -46,14 +46,16 @@ let package = Package(
             path: "Sources/Features/SaveConfig"),
         .testTarget(
             name: "SaveConfigTests",
-            dependencies: ["SaveConfig"],
+            dependencies: ["SaveConfig",
+                           "TestUtilities"],
             path: "Tests/Features/SaveConfigTests"),
         .target(
             name: "Syncing",
             dependencies: ["Models"]),
-        .testTarget(
+        .target(
             name: "TestUtilities",
             dependencies: ["Models",
-                           "Syncing"]),
+                           "Syncing"],
+            path: "Tests/TestUtilities"),
     ]
 )

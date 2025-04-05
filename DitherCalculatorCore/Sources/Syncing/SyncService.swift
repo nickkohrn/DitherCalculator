@@ -9,11 +9,11 @@ import CloudKit
 import Models
 import Foundation
 
-public protocol SyncService {
+public protocol SyncService: Sendable {
     func accountStatus() async throws -> CKAccountStatus
     func deleteRecord(withID recordID: CKRecord.ID) async throws -> CKRecord.ID
     func record(for recordID: CKRecord.ID) async throws -> CKRecord
-    func save(_ record: CKRecord) async throws
+    func save(_ record: CKRecord) async throws -> CKRecord
 
     func records(
         matching query: CKQuery,
