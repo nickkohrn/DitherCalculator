@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import ConfigDetails
 import CoreUI
 import Models
 import Observation

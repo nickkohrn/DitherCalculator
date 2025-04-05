@@ -5,72 +5,21 @@
 //  Created by Nick Kohrn on 3/31/25.
 //
 
-import CloudKit
 import CoreUI
 import EditConfig
 import Models
-import Observation
 import SwiftUI
 
-@MainActor @Observable
-final class ConfigDetailsViewModel {
-    public var isDeleting = false
-    public var isShowingDeleteConfirmationDialog = false
-    public var isShowingEditView = false
-    private let didDeleteConfig: (Config) -> Void
-    var shouldDismiss = false
-
-    init(didDeleteConfig: @escaping (Config) -> Void) {
-        self.didDeleteConfig = didDeleteConfig
-    }
-
-    public func result(for config: Config) -> DitherResult? {
-        try? ConfigCalculator.result(for: config)
-    }
-
-    func tappedDeleteButton() {
-        isShowingDeleteConfirmationDialog = true
-    }
-
-    func tappedDeleteConfirmationCancel() {
-        isDeleting = false
-        isShowingDeleteConfirmationDialog = false
-    }
-
-    func tappedDeleteConfirmationConfirm(for config: Config) {
-        isDeleting = true
-        isShowingDeleteConfirmationDialog = false
-        Task {
-            do {
-                try await CKContainer.default().privateCloudDatabase.deleteRecord(withID: config.recordID)
-                await MainActor.run {
-                    didDeleteConfig(config)
-                    shouldDismiss = true
-                }
-            } catch {
-                print(error)
-                await MainActor.run {
-                    isDeleting = true
-                }
-            }
-        }
-    }
-
-    func tappedEditButton() {
-        isShowingEditView = true
-    }
-}
-
-struct ConfigDetailsView: View {
+public struct ConfigDetailsView: View {
     @Environment(Config.self) private var config
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ConfigDetailsViewModel
 
-    init(viewModel: ConfigDetailsViewModel) {
+    public init(viewModel: ConfigDetailsViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
 
-    var body: some View {
+    public var body: some View {
         List {
             Section {
                 LabeledNameRow(name: config.name)
@@ -112,7 +61,7 @@ struct ConfigDetailsView: View {
             isPresented: $viewModel.isShowingDeleteConfirmationDialog,
             titleVisibility: .visible,
             actions: {
-                CancelButton { viewModel.tappedDeleteConfirmationCancel() }
+                CancelButton { viewModel.tappedDeleteConfirmationCancelButton() }
                 DeleteButton { viewModel.tappedDeleteConfirmationConfirm(for: config) }
             },
             message: {
@@ -132,6 +81,9 @@ struct ConfigDetailsView: View {
     }
 }
 
+#if DEBUG
+import CloudKit
+
 #Preview {
     ConfigDetailsView(viewModel: ConfigDetailsViewModel(didDeleteConfig: {_ in }))
         .environment(
@@ -147,3 +99,4 @@ struct ConfigDetailsView: View {
             )
         )
 }
+#endif

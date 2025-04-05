@@ -7,6 +7,9 @@ let package = Package(
     platforms: [.iOS(.v18)],
     products: [
         .library(
+            name: "ConfigDetails",
+            targets: ["ConfigDetails"]),
+        .library(
             name: "CoreUI",
             targets: ["CoreUI"]),
         .library(
@@ -27,6 +30,19 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "ConfigDetails",
+            dependencies: ["CoreUI",
+                           "EditConfig",
+                           "Models",
+                           "Syncing"],
+            path: "Sources/Features/ConfigDetails"),
+        .testTarget(
+            name: "ConfigDetailsTests",
+            dependencies: ["ConfigDetails",
+                           "Models",
+                           "Syncing"],
+            path: "Tests/Features/ConfigDetailsTests"),
+        .target(
             name: "CoreUI",
             dependencies: ["FoundationExtensions",
                            "Models"]),
@@ -39,6 +55,7 @@ let package = Package(
         .testTarget(
             name: "EditConfigTests",
             dependencies: ["EditConfig",
+                           "Models",
                            "TestUtilities"],
             path: "Tests/Features/EditConfigTests"),
         .target(
@@ -61,6 +78,7 @@ let package = Package(
         .testTarget(
             name: "SaveConfigTests",
             dependencies: ["SaveConfig",
+                           "Models",
                            "TestUtilities"],
             path: "Tests/Features/SaveConfigTests"),
         .target(

@@ -15,13 +15,6 @@
     {
       "target" : {
         "containerPath" : "container:DitherCalculatorCore",
-        "identifier" : "EditConfigTests",
-        "name" : "EditConfigTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:DitherCalculatorCore",
         "identifier" : "SaveConfigTests",
         "name" : "SaveConfigTests"
       }
@@ -36,8 +29,22 @@
     {
       "target" : {
         "containerPath" : "container:DitherCalculatorCore",
+        "identifier" : "EditConfigTests",
+        "name" : "EditConfigTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DitherCalculatorCore",
         "identifier" : "FoundationExtensionsTests",
         "name" : "FoundationExtensionsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DitherCalculatorCore",
+        "identifier" : "ConfigDetailsTests",
+        "name" : "ConfigDetailsTests"
       }
     }
   ],
